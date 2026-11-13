@@ -1,0 +1,35 @@
+// nextierglobal.ai — copy buttons and curl/SDK tabs on the doc pages. No dependencies.
+(function () {
+  document.querySelectorAll("pre").forEach(function (pre) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "copy";
+    b.textContent = "Copy";
+    b.addEventListener("click", function () {
+      var text = (pre.querySelector("code") || pre).innerText;
+      var done = function () {
+        b.textContent = "Copied";
+        setTimeout(function () { b.textContent = "Copy"; }, 1400);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, function () {});
+    });
+    pre.appendChild(b);
+  });
+
+  document.querySelectorAll(".tabs").forEach(function (tabs) {
+    var panes = tabs.nextElementSibling;
+    if (!panes) return;
+    var buttons = tabs.querySelectorAll("button");
+    buttons.forEach(function (btn, i) {
+      btn.addEventListener("click", function () {
+        buttons.forEach(function (x, j) { x.setAttribute("aria-selected", String(i === j)); });
+        Array.prototype.forEach.call(panes.children, function (p, j) { p.hidden = i !== j; });
+        try { localStorage.setItem("nx-tab", btn.textContent); } catch (e) {}
+      });
+    });
+  });
+  try {
+    var pref = localStorage.getItem("nx-tab");
+    if (pref) document.querySelectorAll(".tabs button").forEach(function (b) { if (b.textContent === pref) b.click(); });
+  } catch (e) {}
+})();

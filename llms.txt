@@ -1,0 +1,13 @@
+# Nextier Global
+
+> Enterprise Execution Platform. Intelligence, judgment, execution. API, SDK, MCP, Build Packs.
+
+- Base URL: https://www.nxtier.ai/api/data-engine/v1
+- Auth: x-api-key: de_live_… (or Authorization: Bearer). One key = one workspace.
+- Push endpoints stage work; nothing sends until a person approves it in nxtier.ai.
+
+## Pages
+- [API](https://www.nextierglobal.ai/api.html): all 11 endpoints
+- [SDK](https://www.nextierglobal.ai/sdk.html): zero-dependency JavaScript client
+- [MCP](https://www.nextierglobal.ai/mcp.html): tools for AI assistants (private beta)
+- [Build Packs](https://www.nextierglobal.ai/build-packs.html): a working execution system, set up in your own workspace

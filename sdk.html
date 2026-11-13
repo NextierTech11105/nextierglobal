@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SDK · Nextier Global</title>
+<meta name="description" content="A zero-dependency JavaScript SDK with TypeScript types for the Nextier Data Engine API. Node 18+, Deno, Bun and edge runtimes.">
+<link rel="canonical" href="https://www.nextierglobal.ai/sdk.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Nextier Global">
+<meta property="og:title" content="SDK · Nextier Global">
+<meta property="og:description" content="A zero-dependency JavaScript SDK with TypeScript types for the Nextier Data Engine API. Node 18+, Deno, Bun and edge runtimes.">
+<meta property="og:url" content="https://www.nextierglobal.ai/sdk.html">
+<meta property="og:image" content="https://www.nextierglobal.ai/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#040a1f">
+<link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;700&family=Montserrat:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body class="doc-page">
+<header class="top"><div class="in">
+  <a class="brand" href="./" aria-label="Nextier Global home"><svg class="mk-s" viewBox="0 0 200 200" role="img" aria-label="Nextier Global">
+<defs>
+<linearGradient id="mb1h" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5fcbff"/><stop offset="1" stop-color="#1f5bff"/></linearGradient>
+<linearGradient id="mb2h" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#2f74ff"/><stop offset="1" stop-color="#1846d8"/></linearGradient>
+<linearGradient id="mo1h" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb23d"/><stop offset="1" stop-color="#ff6a1f"/></linearGradient>
+<linearGradient id="mo2h" x1="1" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ff3b4e"/><stop offset="1" stop-color="#ff7424"/></linearGradient>
+<linearGradient id="mhh" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#72d3ff"/><stop offset="1" stop-color="#1d5cff"/></linearGradient>
+</defs>
+<path fill="url(#mb1h)" d="M14 14H72L128 100H72Z"/>
+<path fill="url(#mb2h)" d="M14 186H72L128 100H72Z"/>
+<path fill="url(#mo1h)" d="M186 14H128L72 100H128Z"/>
+<path fill="url(#mo2h)" d="M186 186H128L72 100H128Z"/>
+<path fill="url(#mhh)" stroke="#060d26" stroke-width="9" stroke-linejoin="round" d="M100 61L134 80.5V119.5L100 139L66 119.5V80.5Z"/>
+<path fill="none" stroke="#b5ecff" stroke-opacity=".6" stroke-width="2.4" d="M100 74L122.5 87V113L100 126L77.5 113V87Z"/>
+</svg><span>NEX<b>TIER</b> GLOBAL</span></a>
+  <nav class="nav" aria-label="Main"><a href="api.html">API</a><a href="sdk.html" aria-current="page">SDK</a><a href="mcp.html">MCP</a><a href="build-packs.html">Build Packs</a><a class="cta" href="https://www.nxtier.ai/book/nextier" target="_blank" rel="noopener">Request a key</a></nav>
+</div></header>
+<main>
+<div class="wrap docs">
+<aside class="toc" aria-label="On this page"><b>SDK</b><a href="#install">Install</a><a href="#use">Use</a><a href="#methods">Methods</a><a href="#paging">Paging</a><a href="#errors">Errors and retries</a></aside>
+<article class="doc">
+<span class="status live">v0.1.0</span>
+<h1>SDK</h1>
+<p>One file, no dependencies, full TypeScript types. Runs anywhere <code>fetch</code> does: Node 18+, Deno, Bun and edge runtimes. Server-side only, because your key is a secret.</p>
+
+<h2 id="install">Install</h2>
+<p>Download the two files into your project. An npm package is next.</p>
+<pre><code>curl -O https://www.nextierglobal.ai/sdk/nextier.mjs
+curl -O https://www.nextierglobal.ai/sdk/nextier.d.ts</code></pre>
+<p><a href="sdk/nextier.mjs">nextier.mjs</a> · <a href="sdk/nextier.d.ts">nextier.d.ts</a></p>
+
+<h2 id="use">Use</h2>
+<pre><code>import { Nextier } from "./nextier.mjs";
+
+const nx = new Nextier({ apiKey: process.env.NEXTIER_API_KEY });
+
+// Detect
+const { signals } = await nx.signals.netNew({ since: "2026-10-01", family: "distress" });
+
+// Classify + prioritize: born tagged, then keep it aligned
+await nx.leads.autotag({ leadIds: signals.map((s) =&gt; s.lead_id).filter(Boolean) });
+
+// Execute: stage the initial outreach for a person to approve
+const ready = [];
+for await (const lead of nx.leads.listAll({ tag: "EXECUTION_READY" })) ready.push(lead.id);
+const block = await nx.push.initialSms({ leadIds: ready, name: "Net-new distress" });
+console.log("Approve it here:", block.launchUrl);</code></pre>
+
+<h3>Options</h3>
+<div class="tbl"><table><thead><tr><th>Option</th><th>Default</th><th>Notes</th></tr></thead><tbody>
+<tr><td><code>apiKey</code></td><td>required</td><td>Your <code>de_live_…</code> key.</td></tr>
+<tr><td><code>baseUrl</code></td><td><code>https://www.nxtier.ai/api/data-engine/v1</code></td><td>Override for testing.</td></tr>
+<tr><td><code>retries</code></td><td><code>2</code></td><td>Retries for reads on 429, 5xx and network errors.</td></tr>
+<tr><td><code>timeoutMs</code></td><td><code>30000</code></td><td>Per request.</td></tr>
+<tr><td><code>fetch</code></td><td>global <code>fetch</code></td><td>Bring your own implementation.</td></tr>
+</tbody></table></div>
+
+<h2 id="methods">Methods</h2>
+<div class="tbl"><table><thead><tr><th>Method</th><th>Endpoint</th><th>Does</th></tr></thead><tbody><tr><td><code>nx.info()</code></td><td><code>GET /</code></td><td>Confirm the key, list endpoints</td></tr><tr><td><code>nx.fields()</code></td><td><code>GET /fields</code></td><td>Field registry</td></tr><tr><td><code>nx.signals.netNew({ since, limit, family })</code></td><td><code>GET /signals/net-new</code></td><td>Net-new signals</td></tr><tr><td><code>nx.leads.list({ search, tag, sourceTag, limit, offset })</code></td><td><code>GET /leads</code></td><td>One page of leads</td></tr><tr><td><code>nx.leads.listAll({ search, tag, sourceTag })</code></td><td><code>GET /leads</code></td><td>Async iterator over every page</td></tr><tr><td><code>nx.leads.autotag({ leadIds, limit, mode })</code></td><td><code>POST /leads/autotag</code></td><td>Labels at origin / dynamic re-stamp</td></tr><tr><td><code>nx.leads.tag({ leadIds, addTags, removeTags })</code></td><td><code>POST /leads/tag</code></td><td>Bulk tags</td></tr><tr><td><code>nx.leads.update({ leadIds, set })</code></td><td><code>POST /leads/update</code></td><td>Bulk safe fields</td></tr><tr><td><code>nx.push.initialSms({ leadIds, name, signalType })</code></td><td><code>POST /push/initial-sms</code></td><td>Stage a held block</td></tr><tr><td><code>nx.push.contactCenter({ leadIds })</code></td><td><code>POST /push/contact-center</code></td><td>Queue for calls</td></tr><tr><td><code>nx.push.dialer({ leads, leadIds })</code></td><td><code>POST /push/dialer</code></td><td>Rows or leads onto the dialer</td></tr></tbody></table></div>
+
+<h2 id="paging">Paging</h2>
+<p><code>listAll</code> walks every page at the API’s 200-per-page maximum and yields one lead at a time.</p>
+<pre><code>let n = 0;
+for await (const lead of nx.leads.listAll({ tag: "HIGH_PURSUIT" })) n++;
+console.log(n, "high-pursuit leads");</code></pre>
+
+<h2 id="errors">Errors and retries</h2>
+<p>Every failure throws a <code>NextierError</code> with <code>status</code> and the API’s error <code>body</code>. Reads are retried with exponential backoff on 429, 5xx and network errors. <b>Pushes are never retried automatically</b>, so nothing is ever staged twice.</p>
+<pre><code>import { Nextier, NextierError } from "./nextier.mjs";
+
+try {
+  await nx.leads.update({ leadIds, set: { priority: "high" } });
+} catch (e) {
+  if (e instanceof NextierError &amp;&amp; e.status === 401) console.error(e.body.hint);
+  else throw e;
+}</code></pre>
+</article></div>
+</main>
+<footer><div class="wrap in"><span>© 2026 Nextier Technologies</span><span><a href="api.html">API</a> · <a href="sdk.html">SDK</a> · <a href="mcp.html">MCP</a> · <a href="build-packs.html">Build Packs</a></span></div></footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

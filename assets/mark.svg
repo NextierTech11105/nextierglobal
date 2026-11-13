@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="" viewBox="0 0 200 200" role="img" aria-label="Nextier Global">
+<defs>
+<linearGradient id="mb1f" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5fcbff"/><stop offset="1" stop-color="#1f5bff"/></linearGradient>
+<linearGradient id="mb2f" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#2f74ff"/><stop offset="1" stop-color="#1846d8"/></linearGradient>
+<linearGradient id="mo1f" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb23d"/><stop offset="1" stop-color="#ff6a1f"/></linearGradient>
+<linearGradient id="mo2f" x1="1" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ff3b4e"/><stop offset="1" stop-color="#ff7424"/></linearGradient>
+<linearGradient id="mhf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#72d3ff"/><stop offset="1" stop-color="#1d5cff"/></linearGradient>
+</defs>
+<path fill="url(#mb1f)" d="M14 14H72L128 100H72Z"/>
+<path fill="url(#mb2f)" d="M14 186H72L128 100H72Z"/>
+<path fill="url(#mo1f)" d="M186 14H128L72 100H128Z"/>
+<path fill="url(#mo2f)" d="M186 186H128L72 100H128Z"/>
+<path fill="url(#mhf)" stroke="#060d26" stroke-width="9" stroke-linejoin="round" d="M100 61L134 80.5V119.5L100 139L66 119.5V80.5Z"/>
+<path fill="none" stroke="#b5ecff" stroke-opacity=".6" stroke-width="2.4" d="M100 74L122.5 87V113L100 126L77.5 113V87Z"/>
+</svg>

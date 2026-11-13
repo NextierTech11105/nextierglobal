@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MCP · Nextier Global</title>
+<meta name="description" content="The Nextier MCP server lets Claude, Cursor or any MCP client work your Nextier data in plain English. Reads first; enrichment is billed and says so.">
+<link rel="canonical" href="https://www.nextierglobal.ai/mcp.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Nextier Global">
+<meta property="og:title" content="MCP · Nextier Global">
+<meta property="og:description" content="The Nextier MCP server lets Claude, Cursor or any MCP client work your Nextier data in plain English. Reads first; enrichment is billed and says so.">
+<meta property="og:url" content="https://www.nextierglobal.ai/mcp.html">
+<meta property="og:image" content="https://www.nextierglobal.ai/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#040a1f">
+<link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;700&family=Montserrat:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body class="doc-page">
+<header class="top"><div class="in">
+  <a class="brand" href="./" aria-label="Nextier Global home"><svg class="mk-s" viewBox="0 0 200 200" role="img" aria-label="Nextier Global">
+<defs>
+<linearGradient id="mb1h" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5fcbff"/><stop offset="1" stop-color="#1f5bff"/></linearGradient>
+<linearGradient id="mb2h" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#2f74ff"/><stop offset="1" stop-color="#1846d8"/></linearGradient>
+<linearGradient id="mo1h" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb23d"/><stop offset="1" stop-color="#ff6a1f"/></linearGradient>
+<linearGradient id="mo2h" x1="1" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ff3b4e"/><stop offset="1" stop-color="#ff7424"/></linearGradient>
+<linearGradient id="mhh" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#72d3ff"/><stop offset="1" stop-color="#1d5cff"/></linearGradient>
+</defs>
+<path fill="url(#mb1h)" d="M14 14H72L128 100H72Z"/>
+<path fill="url(#mb2h)" d="M14 186H72L128 100H72Z"/>
+<path fill="url(#mo1h)" d="M186 14H128L72 100H128Z"/>
+<path fill="url(#mo2h)" d="M186 186H128L72 100H128Z"/>
+<path fill="url(#mhh)" stroke="#060d26" stroke-width="9" stroke-linejoin="round" d="M100 61L134 80.5V119.5L100 139L66 119.5V80.5Z"/>
+<path fill="none" stroke="#b5ecff" stroke-opacity=".6" stroke-width="2.4" d="M100 74L122.5 87V113L100 126L77.5 113V87Z"/>
+</svg><span>NEX<b>TIER</b> GLOBAL</span></a>
+  <nav class="nav" aria-label="Main"><a href="api.html">API</a><a href="sdk.html">SDK</a><a href="mcp.html" aria-current="page">MCP</a><a href="build-packs.html">Build Packs</a><a class="cta" href="https://www.nxtier.ai/book/nextier" target="_blank" rel="noopener">Request a key</a></nav>
+</div></header>
+<main>
+<div class="wrap docs">
+<aside class="toc" aria-label="On this page"><b>MCP</b><a href="#what">What it is</a><a href="#status">Status</a><a href="#tools">Tools</a><a href="#ask">What to ask</a><a href="#api">MCP or API?</a></aside>
+<article class="doc">
+<span class="status">Private beta</span>
+<h1>MCP</h1>
+<p id="what">Plug the Data Engine straight into Claude, Cursor, Windsurf or any client that speaks the Model Context Protocol. Your AI can count, search, enrich and check your queues in plain English, against the same workspace as the app.</p>
+<ul class="checks">
+  <li><b>Reads first.</b> 10 of the 14 tools only read.</li>
+  <li><b>Enrichment is billed, and says so.</b> The 4 enrichment tools write results back to your leads and are metered per use.</li>
+  <li><b>Nothing sends.</b> No tool texts, calls or emails anyone.</li>
+  <li><b>Same truth as the app.</b> Counts come from the same tables the operators work from.</li>
+</ul>
+
+<h2 id="status">Status</h2>
+<p>The server runs today for Nextier operators. Client access, signing in with your own Data Engine key and pinned to your workspace, is rolling out to private-beta partners. <a href="https://www.nxtier.ai/book/nextier" target="_blank" rel="noopener">Request access</a>.</p>
+
+<h2 id="tools">Tools</h2>
+<h3>Leads</h3><div class="tbl"><table><tbody><tr><td><code>leads_search</code></td><td><span class="tier">read</span></td><td>Search leads with filters. Paged.</td></tr><tr><td><code>leads_get</code></td><td><span class="tier">read</span></td><td>One lead, in full.</td></tr><tr><td><code>leads_count</code></td><td><span class="tier">read</span></td><td>Lead counts, grouped by status or pipeline.</td></tr><tr><td><code>leads_attempt_log</code></td><td><span class="tier">read</span></td><td>Every text, call and email on a lead.</td></tr></tbody></table></div><h3>Campaigns</h3><div class="tbl"><table><tbody><tr><td><code>campaigns_list</code></td><td><span class="tier">read</span></td><td>Every campaign in the workspace.</td></tr><tr><td><code>campaigns_get</code></td><td><span class="tier">read</span></td><td>One campaign, in full.</td></tr></tbody></table></div><h3>Pipeline</h3><div class="tbl"><table><tbody><tr><td><code>pipeline_queue_stats</code></td><td><span class="tier">read</span></td><td>Leads by pipeline status, send readiness and suppression counts.</td></tr><tr><td><code>pipeline_call_queue</code></td><td><span class="tier">read</span></td><td>Leads waiting on the call queue.</td></tr></tbody></table></div><h3>Enrichment</h3><div class="tbl"><table><tbody><tr><td><code>enrich_property</code></td><td><span class="tier w">write · billed</span></td><td>Property detail and value for an address.</td></tr><tr><td><code>enrich_company</code></td><td><span class="tier w">write · billed</span></td><td>Fills in what a business record left blank.</td></tr><tr><td><code>enrich_skip_trace</code></td><td><span class="tier w">write · billed</span></td><td>Owner phones and emails, written back to the lead. Counts first by default and spends nothing until you run it.</td></tr><tr><td><code>enrich_validate_phone</code></td><td><span class="tier w">write · billed</span></td><td>Line type: mobile, landline or VoIP. Only mobiles get texts.</td></tr></tbody></table></div><h3>Workspace</h3><div class="tbl"><table><tbody><tr><td><code>workspace_info</code></td><td><span class="tier">read</span></td><td>Your workspace and its settings.</td></tr><tr><td><code>health_check</code></td><td><span class="tier">read</span></td><td>Status of the systems behind your workspace.</td></tr></tbody></table></div>
+
+<h2 id="ask">What to ask</h2>
+<pre><code>"How many contactable pre-foreclosure leads do we have in Suffolk?"
+"Show me every attempt on this lead and whether it was delivered."
+"Which campaigns are paused, and how many leads are left in each?"
+"How many leads are waiting on the call queue right now?"</code></pre>
+
+<h2 id="api">MCP or API?</h2>
+<div class="grid g2">
+  <div class="card"><div class="k">Use the API</div><p>When a system does the work: pipelines, schedulers, your CRM, a data warehouse. It reads, tags and stages.</p></div>
+  <div class="card"><div class="k">Use the MCP</div><p>When a person asks the questions through an AI assistant.</p></div>
+</div>
+</article></div>
+</main>
+<footer><div class="wrap in"><span>© 2026 Nextier Technologies</span><span><a href="api.html">API</a> · <a href="sdk.html">SDK</a> · <a href="mcp.html">MCP</a> · <a href="build-packs.html">Build Packs</a></span></div></footer>
+<script src="assets/site.js"></script>
+</body>
+</html>
