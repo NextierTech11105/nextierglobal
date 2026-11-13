@@ -359,13 +359,14 @@ ${EP.map(endpointBlock).join("\n")}
 </div>`,
 });
 
-// packages/mcp-server/src/tools — each tool's own "Tier:" line.
+// packages/mcp-server/src/tools — each tool's own "Tier:" line. Read tools listed only if they answered live on
+// 2026-11-13; campaigns_get (404), health_check (403) and pipeline_call_queue (timed out) are left off until fixed.
 const MCP_TOOLS = [
   ["Leads", [["leads_search", "read", "Search leads with filters. Paged."], ["leads_get", "read", "One lead, in full."], ["leads_count", "read", "Lead counts, grouped by status or pipeline."], ["leads_attempt_log", "read", "Every text, call and email on a lead."]]],
-  ["Campaigns", [["campaigns_list", "read", "Every campaign in the workspace."], ["campaigns_get", "read", "One campaign, in full."]]],
-  ["Pipeline", [["pipeline_queue_stats", "read", "Leads by pipeline status, send readiness and suppression counts."], ["pipeline_call_queue", "read", "Leads waiting on the call queue."]]],
+  ["Campaigns", [["campaigns_list", "read", "Every campaign in the workspace, with its steps."]]],
+  ["Pipeline", [["pipeline_queue_stats", "read", "Call queue, contactable, replied and suppressed counts."]]],
   ["Enrichment", [["enrich_property", "write · billed", "Property detail and value for an address."], ["enrich_company", "write · billed", "Fills in what a business record left blank."], ["enrich_skip_trace", "write · billed", "Owner phones and emails, written back to the lead. Counts first by default and spends nothing until you run it."], ["enrich_validate_phone", "write · billed", "Line type: mobile, landline or VoIP. Only mobiles get texts."]]],
-  ["Workspace", [["workspace_info", "read", "Your workspace and its settings."], ["health_check", "read", "Status of the systems behind your workspace."]]],
+  ["Workspace", [["workspace_info", "read", "Your workspace and its settings."]]],
 ];
 const readCount = MCP_TOOLS.flatMap(([, l]) => l).filter(([, t]) => t === "read").length;
 const writeCount = MCP_TOOLS.flatMap(([, l]) => l).length - readCount;
@@ -377,7 +378,7 @@ const mcp = page({
   body: `<div class="wrap docs">
 <aside class="toc" aria-label="On this page"><b>MCP</b><a href="#what">What it is</a><a href="#status">Status</a><a href="#tools">Tools</a><a href="#ask">What to ask</a><a href="#api">MCP or API?</a></aside>
 <article class="doc">
-<span class="status">Private beta</span>
+<span class="status">Operators today</span>
 <h1>MCP</h1>
 <p id="what">Plug the Data Engine straight into Claude, Cursor, Windsurf or any client that speaks the Model Context Protocol. Your AI can count, search, enrich and check your queues in plain English, against the same workspace as the app.</p>
 <ul class="checks">
@@ -388,7 +389,7 @@ const mcp = page({
 </ul>
 
 <h2 id="status">Status</h2>
-<p>The server runs today for Nextier operators. Client access, signing in with your own Data Engine key and pinned to your workspace, is rolling out to private-beta partners. <a href="${BOOK}" target="_blank" rel="noopener">Request access</a>.</p>
+<p>The server runs today for Nextier operators. Client access, signing in with your own Data Engine key and pinned to your workspace, is the next build. <a href="${BOOK}" target="_blank" rel="noopener">Request access</a>.</p>
 
 <h2 id="tools">Tools</h2>
 ${MCP_TOOLS.map(([g, list]) => `<h3>${g}</h3><div class="tbl"><table><tbody>${list.map(([n, t, d]) => `<tr><td><code>${n}</code></td><td><span class="tier${t === "read" ? "" : " w"}">${esc(t)}</span></td><td>${esc(d)}</td></tr>`).join("")}</tbody></table></div>`).join("")}
@@ -509,7 +510,7 @@ fs.writeFileSync(
 );
 fs.writeFileSync(
   path.join(OUT, "llms.txt"),
-  `# Nextier Global\n\n> Enterprise Execution Platform. Intelligence, judgment, execution. API, SDK, MCP, Build Packs.\n\n- Base URL: ${BASE}\n- Auth: x-api-key: de_live_… (or Authorization: Bearer). One key = one workspace.\n- Push endpoints stage work; nothing sends until a person approves it in nxtier.ai.\n\n## Pages\n- [API](${SITE}/api.html): all ${EP.length} endpoints\n- [SDK](${SITE}/sdk.html): zero-dependency JavaScript client\n- [MCP](${SITE}/mcp.html): tools for AI assistants (private beta)\n- [Build Packs](${SITE}/build-packs.html): a working execution system, set up in your own workspace\n`,
+  `# Nextier Global\n\n> Enterprise Execution Platform. Intelligence, judgment, execution. API, SDK, MCP, Build Packs.\n\n- Base URL: ${BASE}\n- Auth: x-api-key: de_live_… (or Authorization: Bearer). One key = one workspace.\n- Push endpoints stage work; nothing sends until a person approves it in nxtier.ai.\n\n## Pages\n- [API](${SITE}/api.html): all ${EP.length} endpoints\n- [SDK](${SITE}/sdk.html): zero-dependency JavaScript client\n- [MCP](${SITE}/mcp.html): tools for AI assistants (Nextier operators today)\n- [Build Packs](${SITE}/build-packs.html): a working execution system, set up in your own workspace\n`,
 );
 fs.writeFileSync(path.join(OUT, ".nojekyll"), "");
 console.log("built", Object.keys(files).length, "pages + mark.svg, robots, sitemap, llms.txt", REG ? `· registry ${REG.total}/${REG.static}/${REG.dynamic}/${REG.triggerReady}` : "· registry not found, counts left out");

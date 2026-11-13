@@ -9,5 +9,5 @@
 ## Pages
 - [API](https://www.nextierglobal.ai/api.html): all 11 endpoints
 - [SDK](https://www.nextierglobal.ai/sdk.html): zero-dependency JavaScript client
-- [MCP](https://www.nextierglobal.ai/mcp.html): tools for AI assistants (private beta)
+- [MCP](https://www.nextierglobal.ai/mcp.html): tools for AI assistants (Nextier operators today)
 - [Build Packs](https://www.nextierglobal.ai/build-packs.html): a working execution system, set up in your own workspace
