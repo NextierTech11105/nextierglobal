@@ -52,7 +52,7 @@ const NAV = [
   ["docs.html", "Docs"],
   ["plans.html", "Plans"],
 ];
-const PACK_FILES = ["data-engine.html", "campaign-engine.html", "pipeline-engine.html"];
+const PACK_FILES = ["data-engine.html", "campaign-engine.html", "inbound-factory.html"];
 
 // ───────────────────────────── the mark, the cards, the stand ─────────────────────────────
 function mark(cls, k) {

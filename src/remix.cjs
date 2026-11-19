@@ -23,7 +23,7 @@ module.exports = function remix(h) {
     harness: { name: "The Harness", line: "Repeatable, high-impact, personalized initial outreach.", page: "harness-film.html", mp4: "assets/harness.mp4", poster: "assets/harness-poster.jpg", local: true },
     data: { name: "Data Engine", page: "data-optimization-engine.html" }, //                       11-04 "BRO THIS IS FUCKING EPIC"
     campaign: { name: "Campaign Engine", page: "campaign-engine-run.html", phone: true }, //       11-03 "this execution story mode is savage"
-    pipeline: { name: "Pipeline Engine", page: "advisor-execution.html" }, //                      11-05 "LOVE IT"
+    pipeline: { name: "Inbound Factory", page: "advisor-execution.html" }, //                      11-05 "LOVE IT" · renamed 11-19
     comms: { name: "Communication OS", page: "communication-os.html", mp4: "media/communication-os.mp4", mobile: "media/communication-os-mobile.mp4" },
     terminal: { name: "Deal Origination Terminal", page: "deal-origination-os.html" },
     bronx: { name: "The Bronx file", line: "In contract.", page: "bronx-file.html", mp4: "media/bronx-file.mp4", mobile: "media/bronx-file-mobile.mp4" }, // 11-17 "THIS IS FUCKING EPIC!!!"
@@ -88,8 +88,9 @@ module.exports = function remix(h) {
     // lib/signals/changing-fields.ts, lib/eligibility/mobile-contactability.ts, api/data-engine/v1/*, api/voice/quick-call
     {
       file: "data-engine.html",
-      film: "data",
-      more: ["overview", "notice"],
+      // 11-19 "but first its dataengine": the Data Engine film opens Build Packs, so it plays there, not twice.
+      film: "overview",
+      more: ["notice"],
       n: "01",
       name: "Data Engine",
       line: "From a territory to an owner you can call.",
@@ -271,29 +272,31 @@ module.exports = function remix(h) {
     // api/inbound/priority-callbacks, api/leads/[id]/mark-worked, lib/voice/voicemail-substance.ts, t/[team]/calendar,
     // lib/robots/{robot-registry,robot-board,workforce,workforce-board}.ts, api/ops/rail-health, lib/crm/unified-crm-service.ts
     {
-      file: "pipeline-engine.html",
+      // 11-19 Thomas: "rename pipeline engine → inbound factory · more about having conversations than price".
+      // pipeline-engine.html stays as a hand-written redirect stub (not generated).
+      file: "inbound-factory.html",
       film: "pipeline",
       n: "03",
-      name: "Pipeline Engine",
-      tag: "Pipeline management and optimization",
-      line: "Every reply worked, in order. One record of truth.",
-      about: "Every outcome goes through one router, every attempt sits in one ledger, and the people who raised a hand are on top. The machine does the clerical work and stops where judgment starts.",
-      who: "Teams whose replies, callbacks and follow-ups have outgrown a spreadsheet and a CRM's default views.",
-      problem: "Replies sit unworked, voicemails get missed, and the pipeline board says one thing while the message history says another.",
+      name: "Inbound Factory",
+      tag: "Replies into conversations",
+      line: "Every reply is a conversation. Start it while it's warm.",
+      about: "Replies sorted, callbacks on top, the next conversation already open. The machine does the clerical work and stops where the conversation starts.",
+      who: "Teams ready to turn every meaningful reply, voicemail, and callback into a timely, accountable conversation.",
+      problem: "Warm replies go cold, voicemails are missed, and nobody knows who owns the next conversation.",
       spec: [
+        ["Conversations", [
+          "Every reply classified: positive, negative, neutral, opt-out, question, booking",
+          "Any reply counts as engaged",
+          "Callbacks first: anyone who called or left a voicemail sits above every cold row",
+          "A repeat caller is one person to call back. Hangups are filtered out",
+          "Voicemail text in full, never cut off",
+        ]],
         ["One source of truth", [
           "One disposition router: every outcome in one transaction, the lead row locked",
           "A 60-second duplicate guard",
           "Stage changes fire events after commit. Listeners log the touch, enroll nurture, queue the call, suppress",
           "Opt-out blocks future sends and cancels queued ones",
           "Attempt ledger: every text, call and email, append-only",
-        ]],
-        ["Inbound", [
-          "Every reply classified: positive, negative, neutral, opt-out, question, booking",
-          "Any reply counts as engaged",
-          "Callbacks first: anyone who called or left a voicemail sits above every cold row",
-          "A repeat caller is one person to call back. Hangups are filtered out",
-          "Voicemail text in full, never cut off",
         ]],
         ["Operator controls", [
           "Being Worked: one click bookmarks what you're pursuing. It isn't an outcome, and un-clicking changes nothing",
@@ -423,7 +426,7 @@ ${p.faq.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></
   const catalog = page({
     file: "build-packs.html",
     title: "Build Packs · Nextier Global",
-    description: "A working execution system, set up in your own workspace: Data Engine, Campaign Engine, Pipeline Engine.",
+    description: "A working execution system, set up in your own workspace: Data Engine, Campaign Engine, Inbound Factory.",
     cta: "Book a call",
     body: `<section class="hero">
 <div class="kicker">Build Packs</div>
@@ -431,15 +434,12 @@ ${p.faq.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></
 <ul class="said"><li>Agnostic personalized infrastructure.</li><li>Remixable.</li><li>B2B, B2C or real estate professionals.</li></ul>
 </section>
 <section class="sec films">
-${["harness", "data", "campaign", "pipeline", "comms", "terminal"].map(film).join("\n")}
+${/* 11-19 Thomas: "but first its dataengine" · "nextier communication os, just put that video" · "and then nxtstory nxtpost".
+   Every other film plays on its own page only ("REMOVE ANY OVERLAP VIDEOS"). */ ["data", "comms", "nxtpost"].map(film).join("\n")}
 </section>
 <section class="sec">
 <h2>Real deals</h2>
 <div class="grid g2 deals">${film("bronx")}${film("windsor")}</div>
-</section>
-<section class="sec">
-<h2>More films</h2>
-<div class="grid g3 deals">${film("overview")}${film("notice")}${film("nxtpost")}</div>
 </section>
 <section class="sec"><a class="card nextpack" href="harness.html"><div class="k">How it fits together</div><h3>The Intentional Outreach Harness →</h3><p>The map, the Wizard, AI tasks vs role tasks, wizards and dashboards by segment.</p></a></section>
 <section class="sec">
@@ -488,7 +488,7 @@ ${twoWays()}
 <div class="tbl"><table><thead><tr><th>Pack</th><th>Does</th><th>Ends at</th></tr></thead><tbody>
 <tr><td><a href="data-engine.html"><b>Data Engine</b></a></td><td>Territory, signals, owners, phones and emails</td><td>Click to call</td></tr>
 <tr><td><a href="campaign-engine.html"><b>Campaign Engine</b></a></td><td>Initial SMS, replies, email, booking</td><td>A booked call</td></tr>
-<tr><td><a href="pipeline-engine.html"><b>Pipeline Engine</b></a></td><td>Outcomes, callbacks, robots, CRM</td><td>A person's next call</td></tr>
+<tr><td><a href="inbound-factory.html"><b>Inbound Factory</b></a></td><td>Outcomes, callbacks, robots, CRM</td><td>A person's next call</td></tr>
 </tbody></table></div>
 </section>
 <section class="sec">
@@ -779,7 +779,7 @@ ${L("mcp.html", "MCP", `${MCP_TOOLS.flatMap(([, l]) => l).length} tools for AI a
 ${L("harness.html", "Intentional Outreach Harness", "Agnostic execution architecture: the Wizard configures, the harness executes, people decide. Wizards and dashboards by segment.")}
 
 ## Build Packs
-${L("build-packs.html", "Build Packs", "Data Engine, Campaign Engine, Pipeline Engine: a working execution system, set up in your own workspace.")}
+${L("build-packs.html", "Build Packs", "Data Engine, Campaign Engine, Inbound Factory: a working execution system, set up in your own workspace.")}
 ${PACKS.map((p) => L(p.file, p.name, `${p.line} ${p.about}`)).join("\n")}
 
 ## Admin
@@ -957,7 +957,7 @@ ${segTable(DASHBOARDS)}
 <h2>Governance at the center</h2>
 <p class="sub">The default campaign boundary is a 15-minute Discovery, booked and confirmed completed by a person. Qualified opportunities then move to an accountable deal owner.</p>
 <div class="note b"><b>Architectural rule.</b> The Wizard changes the configuration, not the engine. Every workflow stays reusable, remixable, measurable, reversible where appropriate, and governed by explicit human and AI responsibilities.</div>
-<div class="btns"><a class="btn primary" href="build-packs.html">See the Build Packs</a>${book("Book a call", "btn")}</div>
+<div class="btns"><a class="btn primary" href="wizard/">Open the Execution Wizard</a><a class="btn" href="build-packs.html">See the Build Packs</a>${book("Book a call", "btn")}</div>
 </section>`,
   });
 
