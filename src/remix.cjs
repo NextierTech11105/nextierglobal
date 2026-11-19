@@ -9,6 +9,15 @@ module.exports = function remix(h) {
   const ep = (id) => EP.find((e) => e.id === id);
   const book = (label, cls = "btn primary") => `<a class="${cls}" href="${BOOK}" target="_blank" rel="noopener">${esc(label)}</a>`;
 
+  // ───────────────────────────── money: src/offers.json (Thomas sets every price) ─────────────────────────────
+  // No price → the button books a call and no number shows. Price + Stripe link → the button takes payment and the
+  // buyer lands on kickoff.html.
+  const OFFERS = (() => { try { return require("./offers.json"); } catch { return {}; } })();
+  const offer = (file, which) => { const o = ((OFFERS[file] || {})[which]) || {}; return o.price ? o : null; };
+  const priceTag = (o) => (o ? `<div class="price">${esc(o.price)}${o.per ? ` <span>${esc(o.per)}</span>` : ""}</div>` : "");
+  const buyBtn = (o, cls = "btn primary") => (o && o.link ? `<a class="${cls}" href="${esc(o.link)}">Buy · ${esc(o.price)}</a>` : book("Book a call", cls));
+  const heroBtn = (o, label, cls) => (o && o.link ? `<a class="${cls}" href="${esc(o.link)}">${esc(label)} · ${esc(o.price)}</a>` : `<a class="${cls}" href="#own">${esc(label)}</a>`);
+
   // ───────────────────────────── the two ways to own a pack (Thomas, 10-08, his words) ─────────────────────────────
   const WITH_YOU = [
     "Accounts and keys opened in your name",
@@ -28,16 +37,20 @@ module.exports = function remix(h) {
     ["Data", "Pinned to your workspace"],
     ["Customers", "Yours. No middleman"],
   ];
-  const twoWays = (extraForYou = []) => `<section class="sec" id="own">
+  const twoWays = (extraForYou = [], file = "") => {
+    const a = offer(file, "withYou");
+    const b = offer(file, "forYou");
+    return `<section class="sec" id="own">
 <h2>Two ways to own it</h2>
 <p class="sub">Same system either way. It runs on your accounts, and you keep them.</p>
 <div class="grid g2">
-  <div class="card plan"><div class="k">Done with you</div><h3>You set it up. We guide every step.</h3><ul class="checks">${WITH_YOU.map((l) => `<li>${esc(l)}</li>`).join("")}</ul><div class="btns">${book("Book a call")}</div></div>
-  <div class="card plan hot"><div class="k">Done for you, then managed</div><h3>We build it. Then we run it.</h3><ul class="checks">${[...FOR_YOU.slice(0, 3), ...extraForYou, FOR_YOU[3]].map((l) => `<li>${esc(l)}</li>`).join("")}</ul><div class="btns">${book("Book a call")}</div></div>
+  <div class="card plan"><div class="k">Done with you</div><h3>You set it up. We guide every step.</h3>${priceTag(a)}<ul class="checks">${WITH_YOU.map((l) => `<li>${esc(l)}</li>`).join("")}</ul><div class="btns">${buyBtn(a)}</div></div>
+  <div class="card plan hot"><div class="k">Done for you, then managed</div><h3>We build it. Then we run it.</h3>${priceTag(b)}<ul class="checks">${[...FOR_YOU.slice(0, 3), ...extraForYou, FOR_YOU[3]].map((l) => `<li>${esc(l)}</li>`).join("")}</ul><div class="btns">${buyBtn(b)}</div></div>
 </div>
 <h3 style="margin-top:30px">What you own</h3>
 <div class="own">${OWN.map(([k, v]) => `<div class="card"><div class="k">${esc(k)}</div><p>${esc(v)}</p></div>`).join("")}</div>
 </section>`;
+  };
 
   // ───────────────────────────── the three packs ─────────────────────────────
   const fieldLine = REG
@@ -321,7 +334,7 @@ module.exports = function remix(h) {
 <h1>${esc(p.name)}</h1>
 <p class="lede">${esc(p.line)}</p>
 <p class="about">${esc(p.about)}</p>
-<div class="btns">${book("Done with you")}${book("Done for you", "btn")}</div>
+<div class="btns">${heroBtn(offer(p.file, "withYou"), "Done with you", "btn primary")}${heroBtn(offer(p.file, "forYou"), "Done for you", "btn")}</div>
 </section>
 
 <section class="sec" id="spec">
@@ -355,7 +368,7 @@ module.exports = function remix(h) {
 <ol class="steps">${p.live.map(([t, d]) => `<li><b>${esc(t)}</b><span>${esc(d)}</span></li>`).join("")}</ol>
 </section>
 
-${twoWays(p.extraForYou || [])}
+${twoWays(p.extraForYou || [], p.file)}
 
 <section class="sec faq" id="faq">
 <h2>Questions</h2>
@@ -728,7 +741,32 @@ ${L("plans.html", "Plans", "API, done with you, done for you and managed. Every 
 - [openapi](openapi.json)
 `;
 
+  // ───────────────────────────── after payment: Stripe sends the buyer here ─────────────────────────────
+  const kickoff = page({
+    file: "kickoff.html",
+    title: "You're in · Nextier Global",
+    description: "Payment received. Book your kickoff and open your accounts.",
+    cta: "",
+    body: `<section class="hero">
+<div class="kicker">Payment received</div>
+<h1>You're in.</h1>
+<p class="lede">Book your kickoff. We start there.</p>
+<div class="btns">${book("Book your kickoff")}</div>
+</section>
+<section class="sec last">
+<h2>What happens next</h2>
+<ol class="steps">
+<li><b>Kickoff call</b><span>Your territory, your market, who runs it.</span></li>
+<li><b>Open your accounts</b><span>In your name, with your card. We send the list.</span></li>
+<li><b>Add your keys</b><span>In your workspace on nxtier.ai.</span></li>
+<li><b>We load it</b><span>Your first block, ready for your press.</span></li>
+</ol>
+<p class="sub" style="margin-top:22px">Your receipt comes from Stripe by email.</p>
+</section>`,
+  });
+
   const files = {
+    "kickoff.html": kickoff,
     "build-packs.html": catalog,
     "plans.html": plans,
     "docs.html": docs,

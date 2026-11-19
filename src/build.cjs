@@ -492,7 +492,7 @@ fs.writeFileSync(path.join(OUT, "assets", "mark.svg"), mark("", "f").replace("<s
 fs.writeFileSync(path.join(OUT, "robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${SITE}/sitemap.xml\n`);
 fs.writeFileSync(
   path.join(OUT, "sitemap.xml"),
-  `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${Object.keys(files).filter((f) => f !== "404.html").map((f) => `  <url><loc>${SITE}/${f === "index.html" ? "" : f}</loc></url>`).join("\n")}\n</urlset>\n`,
+  `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${Object.keys(files).filter((f) => f !== "404.html" && f !== "kickoff.html").map((f) => `  <url><loc>${SITE}/${f === "index.html" ? "" : f}</loc></url>`).join("\n")}\n</urlset>\n`,
 );
 for (const [f, t] of Object.entries(REMIX.text)) fs.writeFileSync(path.join(OUT, f), t);
 fs.writeFileSync(path.join(OUT, ".nojekyll"), "");

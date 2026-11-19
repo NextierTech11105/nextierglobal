@@ -1,0 +1,15 @@
+{
+  "_read_me": "Thomas sets the prices. Empty price = the page shows 'Book a call' and no number. link = the Stripe payment link for that button (after paying, the buyer lands on kickoff.html).",
+  "data-engine.html": {
+    "withYou": { "price": "", "per": "one time", "link": "" },
+    "forYou": { "price": "", "per": "", "link": "" }
+  },
+  "campaign-engine.html": {
+    "withYou": { "price": "", "per": "one time", "link": "" },
+    "forYou": { "price": "", "per": "", "link": "" }
+  },
+  "pipeline-engine.html": {
+    "withYou": { "price": "", "per": "one time", "link": "" },
+    "forYou": { "price": "", "per": "", "link": "" }
+  }
+}
