@@ -26,6 +26,11 @@ module.exports = function remix(h) {
     terminal: { name: "Deal Origination Terminal", page: "deal-origination-os.html" },
     bronx: { name: "The Bronx file", line: "In contract.", page: "bronx-file.html", mp4: "media/bronx-file.mp4", mobile: "media/bronx-file-mobile.mp4" }, // 11-17 "THIS IS FUCKING EPIC!!!"
     windsor: { name: "New Windsor", line: "Accepted offer.", page: "new-windsor-deal.html", mp4: "media/new-windsor-deal.mp4" }, // 11-14 "LOVE IT"
+    overview: { name: "Data Engine Overview", page: "data-engine-overview.html" }, //            10-26 "THAT IS A FUCKING EPIC" · "HOLY SHIT"
+    notice: { name: "Notice Update · The Run", page: "notice-update-run.html" }, //            11-01 "EPIC FORMAT" · "NOW WE ARE TALKING BABY!!"
+    nxtpost: { name: "NXTPOST · Story Mode", page: "nxtpost-story.html" }, //                   11-05 "FUCKING EPIC BROTHER!!!!"
+    // Checked 11-19: visible text of each page and every frame has no client, firm or advisor name.
+    // Left off: the 11-15 "mechanical" video (shows workspace names + home addresses), the 11-08 Digital Workforce cuts (files not on disk).
   };
   const film = (k) => {
     const f = FILMS[k];
@@ -81,6 +86,7 @@ module.exports = function remix(h) {
     {
       file: "data-engine.html",
       film: "data",
+      more: ["overview", "notice"],
       n: "01",
       name: "Data Engine",
       line: "From a territory to an owner you can call.",
@@ -358,7 +364,7 @@ module.exports = function remix(h) {
 <div class="btns">${heroBtn(offer(p.file, "withYou"), "Done with you", "btn primary")}${heroBtn(offer(p.file, "forYou"), "Done for you", "btn")}</div>
 </section>
 
-<section class="sec">${film(p.film)}</section>
+<section class="sec">${film(p.film)}${p.more ? `<div class="grid g2 deals" style="margin-top:28px">${p.more.map(film).join("")}</div>` : ""}</section>
 
 <section class="sec" id="spec">
 <h2>What it does</h2>
@@ -427,6 +433,10 @@ ${["data", "campaign", "pipeline", "comms", "terminal"].map(film).join("\n")}
 <section class="sec">
 <h2>Real deals</h2>
 <div class="grid g2 deals">${film("bronx")}${film("windsor")}</div>
+</section>
+<section class="sec">
+<h2>More films</h2>
+<div class="grid g3 deals">${film("overview")}${film("notice")}${film("nxtpost")}</div>
 </section>
 <section class="sec"><a class="card nextpack" href="harness.html"><div class="k">How it fits together</div><h3>The Intentional Outreach Harness →</h3><p>The map, the Wizard, AI tasks vs role tasks, wizards and dashboards by segment.</p></a></section>
 <section class="sec">
