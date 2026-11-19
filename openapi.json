@@ -1,0 +1,868 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Nextier Data Engine API",
+    "version": "v1",
+    "description": "Read-first. Reads are scoped to the key's workspace, writes touch descriptive data only, and pushes stage work for a person to approve in nxtier.ai. Nothing texts, calls or emails anyone from this API."
+  },
+  "servers": [
+    {
+      "url": "https://www.nxtier.ai/api/data-engine/v1"
+    }
+  ],
+  "security": [
+    {
+      "apiKey": []
+    },
+    {
+      "bearer": []
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "apiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key",
+        "description": "Data Engine key, de_live_…. One key = one workspace."
+      },
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "The same key as a Bearer token."
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "hint": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "error"
+        ]
+      }
+    }
+  },
+  "paths": {
+    "/": {
+      "get": {
+        "operationId": "info",
+        "summary": "Check your key",
+        "description": "Confirms the key is valid and lists the endpoints it can call. Start here.",
+        "tags": [
+          "Start"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "ok": true,
+                  "product": "Nextier Data Engine",
+                  "version": "v1",
+                  "teamId": "team_…",
+                  "endpoints": {
+                    "fields": "GET /api/data-engine/v1/fields — …",
+                    "leads": "GET /api/data-engine/v1/leads?… — read/pull leads",
+                    "…": "…"
+                  },
+                  "note": "Read-first data portal, complementary to nxtier.ai. Push endpoints STAGE for execution; the operator approves & sends in nxtier.ai. Every call is pinned to this key's team_id.",
+                  "auth": "x-api-key: <key>  (or Authorization: Bearer <key>)"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, unknown or revoked key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fields": {
+      "get": {
+        "operationId": "fields",
+        "summary": "Read the field registry",
+        "description": "Every field the engine watches: static or dynamic, whether a change fires a net-new event (trigger-ready), how often it is re-checked, and where it comes from. 16 fields today: 6 static, 10 dynamic, 6 trigger-ready.",
+        "tags": [
+          "Read"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "ok": true,
+                  "teamId": "team_…",
+                  "total": 16,
+                  "static": 6,
+                  "dynamic": 10,
+                  "triggerReady": 6,
+                  "fields": [
+                    {
+                      "field": "county",
+                      "kind": "static",
+                      "triggerReady": false,
+                      "cadence": "none",
+                      "source": "PLUTO",
+                      "label": "County"
+                    },
+                    {
+                      "field": "vacant",
+                      "kind": "dynamic",
+                      "triggerReady": true,
+                      "cadence": "monthly",
+                      "triggerEvent": "NET_NEW_VACANT",
+                      "source": "…",
+                      "label": "Vacant"
+                    },
+                    "…"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, unknown or revoked key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/signals/net-new": {
+      "get": {
+        "operationId": "signalsNetNew",
+        "summary": "Pull net-new signals",
+        "description": "The engine's flagship output: signals detected for your workspace, newest first. A net-new signal is a new reason to act: a first detection, or a step up the distress ladder.",
+        "tags": [
+          "Detect"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "ok": true,
+                  "teamId": "team_…",
+                  "since": "2026-10-01",
+                  "count": 2,
+                  "signals": [
+                    {
+                      "id": "sig_…1",
+                      "event_type": "NET_NEW_PRE_FORECLOSURE",
+                      "field_name": "pre_foreclosure",
+                      "property_id": "…",
+                      "lead_id": "lead_01J…",
+                      "detected_at": "2026-10-24T11:02:51.000Z",
+                      "signal_family": "distress",
+                      "cadence": "daily",
+                      "truth_class": "verified_net_new"
+                    },
+                    {
+                      "id": "sig_…2",
+                      "event_type": "NET_NEW_AUCTION",
+                      "field_name": "auction",
+                      "property_id": "…",
+                      "lead_id": null,
+                      "detected_at": "2026-10-23T11:01:07.000Z",
+                      "signal_family": "distress",
+                      "cadence": "daily",
+                      "truth_class": "verified_net_new"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, unknown or revoked key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "since",
+            "in": "query",
+            "required": false,
+            "description": "ISO date, YYYY-MM-DD. Signals detected on or after it. Default: 30 days ago.",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Max rows. Capped at 5000. Default: 500.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "family",
+            "in": "query",
+            "required": false,
+            "description": "Only this signal family, e.g. distress.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/leads": {
+      "get": {
+        "operationId": "leadsList",
+        "summary": "Read leads",
+        "description": "Your workspace's leads, most recently updated first. Filter by text, tag or source; page with limit and offset.",
+        "tags": [
+          "Read"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "ok": true,
+                  "teamId": "team_…",
+                  "count": 1,
+                  "limit": 200,
+                  "offset": 0,
+                  "leads": [
+                    {
+                      "id": "lead_01J…",
+                      "first_name": "Jordan",
+                      "last_name": "Example",
+                      "phone": "+15165550142",
+                      "phone_type": "mobile",
+                      "email": null,
+                      "city": "Riverhead",
+                      "state": "NY",
+                      "zip": "11901",
+                      "county": "Suffolk",
+                      "source_tag": "data_engine",
+                      "tags": [
+                        "SEG_PRE_FORECLOSURE",
+                        "GEO_SUFFOLK",
+                        "HIGH_PURSUIT",
+                        "EXECUTION_READY"
+                      ],
+                      "created_at": "2026-10-20T14:02:11.000Z",
+                      "updated_at": "2026-10-24T09:15:40.000Z"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, unknown or revoked key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "description": "Partial, case-insensitive match on first name, last name, phone or email.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tag",
+            "in": "query",
+            "required": false,
+            "description": "Only leads carrying this tag, e.g. EXECUTION_READY.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sourceTag",
+            "in": "query",
+            "required": false,
+            "description": "Exact source tag.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Page size. Capped at 200. Default: 50.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Rows to skip. Default: 0.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ]
+      }
+    },
+    "/leads/autotag": {
+      "post": {
+        "operationId": "leadsAutotag",
+        "summary": "Label at origin (auto-tagging)",
+        "description": "The auto-tagging rule. mode \"origin\" (default) stamps static origin facts plus dynamic labels, so a lead is born tagged. mode \"dynamic\" re-stamps only the dynamic labels and preserves the static ones: run it on every change (enrichment, scrub, signal update) so alignment never drifts. Omit leadIds to tag the whole workspace up to limit.",
+        "tags": [
+          "Classify + Prioritize"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "ok": true,
+                  "tagged": 4820,
+                  "mode": "dynamic",
+                  "breakdown": {
+                    "HIGH_PURSUIT": 312,
+                    "MEDIUM_PURSUIT": 1104,
+                    "HIGH_CONVERGENCE": 87,
+                    "HIGH_CONTACTABILITY": 2210,
+                    "EXECUTION_READY": 296,
+                    "SUPPRESS": 41
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, unknown or revoked key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "leadIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Leads to tag. Omit to run across the workspace. Default: whole workspace."
+                  },
+                  "limit": {
+                    "type": "integer",
+                    "description": "When leadIds is omitted: how many leads. Capped at 50,000. Default: 5000."
+                  },
+                  "mode": {
+                    "type": "string",
+                    "enum": [
+                      "origin",
+                      "dynamic"
+                    ],
+                    "description": "origin = static + dynamic. dynamic = re-stamp dynamic only. Default: \"origin\"."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/leads/score": {
+      "post": {
+        "operationId": "leadsScore",
+        "summary": "Score (same rule as autotag)",
+        "description": "Runs the same auto-tagging rule with the same body and response as /leads/autotag. Kept for integrations built against it; new code should call /leads/autotag.",
+        "tags": [
+          "Classify + Prioritize"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "ok": true,
+                  "tagged": 1,
+                  "mode": "origin",
+                  "breakdown": {
+                    "SEG_PRE_FORECLOSURE": 1,
+                    "HIGH_PURSUIT": 1,
+                    "EXECUTION_READY": 1
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, unknown or revoked key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": true,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/leads/tag": {
+      "post": {
+        "operationId": "leadsTag",
+        "summary": "Tag leads in bulk",
+        "description": "Add or remove your own tags on many leads at once. Idempotent. Journey and compliance tags are not touched.",
+        "tags": [
+          "Classify"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "ok": true,
+                  "updated": 1
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, unknown or revoked key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "leadIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Leads to change."
+                  },
+                  "addTags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Tags to add. One of the alternatives is required."
+                  },
+                  "removeTags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Tags to remove. One of the alternatives is required."
+                  }
+                },
+                "required": [
+                  "leadIds"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/leads/update": {
+      "post": {
+        "operationId": "leadsUpdate",
+        "summary": "Update leads in bulk",
+        "description": "Set a safe list of fields on many leads: priority, score, notes, campaign_name. Anything else is rejected. Journey, compliance and state fields belong to the disposition router and cannot be set from the API.",
+        "tags": [
+          "Classify"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "ok": true,
+                  "updated": 1,
+                  "appliedColumns": [
+                    "priority",
+                    "notes"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, unknown or revoked key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "leadIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Leads to change."
+                  },
+                  "set": {
+                    "type": "object",
+                    "description": "{ priority?: string, score?: integer, notes?: string, campaign_name?: string }"
+                  }
+                },
+                "required": [
+                  "leadIds",
+                  "set"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/push/initial-sms": {
+      "post": {
+        "operationId": "pushInitialSms",
+        "summary": "Stage an Initial SMS block",
+        "description": "Stages a held Initial SMS block from your leads. Nothing sends: an operator reviews the opener and presses Send in nxtier.ai. Ineligible leads are skipped and counted.",
+        "tags": [
+          "Execute"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "ok": true,
+                  "blockId": "cb_de_…",
+                  "leadCount": 296,
+                  "requestedLeadCount": 300,
+                  "ineligibleCount": 4,
+                  "launchUrl": "https://www.nxtier.ai/t/…"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, unknown or revoked key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "leadIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Leads to stage."
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Block name shown on the launch page. Default: Data Engine Push — N leads — date."
+                  },
+                  "signalType": {
+                    "type": "string",
+                    "description": "The signal behind the block, e.g. pre_foreclosure."
+                  }
+                },
+                "required": [
+                  "leadIds"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/push/contact-center": {
+      "post": {
+        "operationId": "pushContactCenter",
+        "summary": "Queue for the Contact Center",
+        "description": "Puts your leads on the workspace's call queue in nxtier.ai. Signal buckets place themselves by tag. Suppressed leads are never queued.",
+        "tags": [
+          "Execute"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "ok": true,
+                  "pushedCount": 118,
+                  "requestedLeadCount": 120,
+                  "ineligibleCount": 2,
+                  "dialerUrl": "https://www.nxtier.ai/t/…"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, unknown or revoked key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "leadIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Leads to queue."
+                  }
+                },
+                "required": [
+                  "leadIds"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/push/dialer": {
+      "post": {
+        "operationId": "pushDialer",
+        "summary": "Push leads to the dialer",
+        "description": "Bring your own rows or route existing leads onto the operator's power dialer. Raw rows are upserted into your workspace first, de-duplicated by phone. Opted-out, suppressed and do-not-call leads are never queued. Nothing is dialed until an operator starts the dialer.",
+        "tags": [
+          "Execute"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "ok": true,
+                  "pushedCount": 1,
+                  "requestedLeadCount": 1,
+                  "createdCount": 1,
+                  "matchedCount": 0,
+                  "invalidCount": 0,
+                  "ineligibleCount": 0,
+                  "leadIds": [
+                    "lead_01J…"
+                  ],
+                  "dialerUrl": "https://www.nxtier.ai/t/…"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, unknown or revoked key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "leads": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    },
+                    "description": "Up to 500 rows per call: firstName, lastName or name, phone, email, address, city, state, zip, notes, phoneType, dnc, tcpa. One of the alternatives is required."
+                  },
+                  "leadIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Leads that already exist in your workspace. One of the alternatives is required."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

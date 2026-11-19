@@ -35,13 +35,23 @@ const REG = registryCounts();
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 const json = (o) => JSON.stringify(o, null, 2);
 
-// The pill on the poster, in its order. Each word is a page.
-const NAV = [
+// The pill on the poster, in its order. Each word is a page. The poster never changes.
+const POSTER = [
   ["api.html", "API"],
   ["sdk.html", "SDK"],
   ["mcp.html", "MCP"],
   ["build-packs.html", "Build Packs"],
 ];
+// The bar on every other page (Exa's layout, 2026-11-19): the packs, the developer pages, the docs index, plans.
+const NAV = [
+  ["build-packs.html", "Build Packs"],
+  ["api.html", "API"],
+  ["sdk.html", "SDK"],
+  ["mcp.html", "MCP"],
+  ["docs.html", "Docs"],
+  ["plans.html", "Plans"],
+];
+const PACK_FILES = ["data-engine.html", "campaign-engine.html", "pipeline-engine.html"];
 
 // ───────────────────────────── the mark, the cards, the stand ─────────────────────────────
 function mark(cls, k) {
@@ -128,7 +138,8 @@ function head({ file, title, description }) {
 }
 
 function page({ file, title, description, body, cta = "Request a key" }) {
-  const nav = NAV.map(([f, l]) => `<a href="${f}"${f === file ? ' aria-current="page"' : ""}>${l}</a>`).join("");
+  const cur = (f) => f === file || (f === "build-packs.html" && PACK_FILES.includes(file)) || (f === "docs.html" && ["quickstart.html", "best-practices.html"].includes(file));
+  const nav = NAV.map(([f, l]) => `<a href="${f}"${cur(f) ? ' aria-current="page"' : ""}>${l}</a>`).join("");
   return `${head({ file, title, description })}
 <body class="doc-page">
 <header class="top"><div class="in">
@@ -177,7 +188,7 @@ ${STREAKS}
     ${STAND}
   </div>
   <h1 class="headline">Enterprise<br>Execution Platform</h1>
-  <nav class="pill" aria-label="Platform">${NAV.map(([f, l]) => `<a href="${f}">${l}</a>`).join('<i aria-hidden="true">•</i>')}</nav>
+  <nav class="pill" aria-label="Platform">${POSTER.map(([f, l]) => `<a href="${f}">${l}</a>`).join('<i aria-hidden="true">•</i>')}</nav>
 </div>
 <p class="poster-foot">${FOOT}</p>
 </main>
@@ -460,33 +471,8 @@ ${code(`import { Nextier, NextierError } from "./nextier.mjs";\n\ntry {\n  await
 </article></div>`,
 });
 
-// Build Packs — one pack per macro segment (Thomas's three: REAL ESTATE · B2B · B2C).
-const PACKS = [
-  ["Real Estate", "Signals → first text → replies → appointments", ""],
-  ["B2B", "Click to call → follow-up → calendar", ""],
-  ["B2C", "Coming soon", "soon"],
-];
-const IN_EVERY_PACK = [
-  ["Data recipe", "Where the records come from, tagged at origin."],
-  ["Opener library", "The first messages, written for your market."],
-  ["Playbook", "What happens after someone replies."],
-  ["Execution map", "What to work today."],
-];
-const packs = page({
-  file: "build-packs.html",
-  title: "Build Packs · Nextier Global",
-  description: "A working execution system, set up in your own workspace. Real Estate, B2B, and B2C soon.",
-  cta: "",
-  body: `<div class="wrap single">
-<article class="doc">
-<h1>Build Packs</h1>
-<p class="lede">A working execution system, set up in your own workspace.</p>
-<div class="grid g3 packs">${PACKS.map(([t, l, k]) => `<div class="card pack${k ? " " + k : ""}"><div class="k">${k ? "Soon" : "Pack"}</div><h3>${esc(t)}</h3><p>${esc(l)}</p></div>`).join("")}</div>
-<h2>In every pack</h2>
-<ul class="checks">${IN_EVERY_PACK.map(([b, d]) => `<li><b>${esc(b)}.</b> ${esc(d)}</li>`).join("")}</ul>
-<div class="btns"><a class="btn primary" href="${BOOK}" target="_blank" rel="noopener">Request a pack</a></div>
-</article></div>`,
-});
+// Build Packs (catalog + three packs), Plans, Docs, Quickstart, Best Practices, llms.txt, openapi.json, skill.md.
+const REMIX = require("./remix.cjs")({ page, code, tabs, esc, json, BASE, SITE, BOOK, EP, REG, MCP_TOOLS, SDK_METHODS });
 
 // Not found → home. Every old Notion link (/Data-Engine-…, /Partners-…) lands here.
 const notFound = `<!doctype html>
@@ -497,7 +483,7 @@ const notFound = `<!doctype html>
 </head><body><p><a href="/">Go to Nextier Global</a></p></body></html>
 `;
 
-const files = { "index.html": home, "api.html": api, "sdk.html": sdk, "mcp.html": mcp, "build-packs.html": packs, "404.html": notFound };
+const files = { "index.html": home, "api.html": api, "sdk.html": sdk, "mcp.html": mcp, ...REMIX.files, "404.html": notFound };
 for (const [f, html] of Object.entries(files)) fs.writeFileSync(path.join(OUT, f), html);
 // pages the old portal wrote that are no longer part of the site
 for (const f of ["byok.html", "glossary.html"]) fs.rmSync(path.join(OUT, f), { force: true });
@@ -506,11 +492,8 @@ fs.writeFileSync(path.join(OUT, "assets", "mark.svg"), mark("", "f").replace("<s
 fs.writeFileSync(path.join(OUT, "robots.txt"), `User-agent: *\nAllow: /\nSitemap: ${SITE}/sitemap.xml\n`);
 fs.writeFileSync(
   path.join(OUT, "sitemap.xml"),
-  `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${[["index.html"], ...NAV].map(([f]) => `  <url><loc>${SITE}/${f === "index.html" ? "" : f}</loc></url>`).join("\n")}\n</urlset>\n`,
+  `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${Object.keys(files).filter((f) => f !== "404.html").map((f) => `  <url><loc>${SITE}/${f === "index.html" ? "" : f}</loc></url>`).join("\n")}\n</urlset>\n`,
 );
-fs.writeFileSync(
-  path.join(OUT, "llms.txt"),
-  `# Nextier Global\n\n> Enterprise Execution Platform. Intelligence, judgment, execution. API, SDK, MCP, Build Packs.\n\n- Base URL: ${BASE}\n- Auth: x-api-key: de_live_… (or Authorization: Bearer). One key = one workspace.\n- Push endpoints stage work; nothing sends until a person approves it in nxtier.ai.\n\n## Pages\n- [API](${SITE}/api.html): all ${EP.length} endpoints\n- [SDK](${SITE}/sdk.html): zero-dependency JavaScript client\n- [MCP](${SITE}/mcp.html): tools for AI assistants (Nextier operators today)\n- [Build Packs](${SITE}/build-packs.html): a working execution system, set up in your own workspace\n`,
-);
+for (const [f, t] of Object.entries(REMIX.text)) fs.writeFileSync(path.join(OUT, f), t);
 fs.writeFileSync(path.join(OUT, ".nojekyll"), "");
-console.log("built", Object.keys(files).length, "pages + mark.svg, robots, sitemap, llms.txt", REG ? `· registry ${REG.total}/${REG.static}/${REG.dynamic}/${REG.triggerReady}` : "· registry not found, counts left out");
+console.log("built", Object.keys(files).length, "pages + mark.svg, robots, sitemap,", Object.keys(REMIX.text).join(", "), REG ? `· registry ${REG.total}/${REG.static}/${REG.dynamic}/${REG.triggerReady}` : "· registry not found, counts left out");

@@ -2,12 +2,45 @@
 
 > Enterprise Execution Platform. Intelligence, judgment, execution. API, SDK, MCP, Build Packs.
 
-- Base URL: https://www.nxtier.ai/api/data-engine/v1
-- Auth: x-api-key: de_live_… (or Authorization: Bearer). One key = one workspace.
-- Push endpoints stage work; nothing sends until a person approves it in nxtier.ai.
+> ## Agent Instructions
+> The Nextier Data Engine API is served at https://www.nxtier.ai/api/data-engine/v1. Authenticate with `x-api-key: $NEXTIER_API_KEY` (or `Authorization: Bearer $NEXTIER_API_KEY`). One key = one workspace; no header switches workspaces. Request a key at https://www.nxtier.ai/book/nextier.
+> Prefer the SDK: sdk/nextier.mjs with types in sdk/nextier.d.ts. No dependencies; pass `apiKey` to `new Nextier({ apiKey })`.
+> Coding agents can load the Nextier agent skill: skill.md.
+> openapi.json is the source of truth for request and response schemas.
+> Push endpoints stage work. Nothing texts, calls or emails anyone until a person approves it in nxtier.ai. Never retry a push automatically.
 
-## Pages
-- [API](https://www.nextierglobal.ai/api.html): all 11 endpoints
-- [SDK](https://www.nextierglobal.ai/sdk.html): zero-dependency JavaScript client
-- [MCP](https://www.nextierglobal.ai/mcp.html): tools for AI assistants (Nextier operators today)
-- [Build Packs](https://www.nextierglobal.ai/build-packs.html): a working execution system, set up in your own workspace
+## Get started
+- [Docs](docs.html): Every page on this site, grouped.
+- [Quickstart](quickstart.html): Key → signals → labels → a staged block, in five calls.
+- [Agent skill](skill.md): Drop-in instructions for Claude Code and other coding agents.
+
+## API
+- [API reference](api.html): Authentication, errors, limits and all 11 endpoints with curl and SDK examples.
+- [Best practices](best-practices.html): Smallest useful request, reading responses in layers, keeping labels aligned, common mistakes.
+- [GET /api/data-engine/v1](api.html#discovery): Check your key.
+- [GET /api/data-engine/v1/fields](api.html#fields): Read the field registry.
+- [GET /api/data-engine/v1/signals/net-new](api.html#signals): Pull net-new signals.
+- [GET /api/data-engine/v1/leads](api.html#leads): Read leads.
+- [POST /api/data-engine/v1/leads/autotag](api.html#autotag): Label at origin (auto-tagging).
+- [POST /api/data-engine/v1/leads/score](api.html#score): Score (same rule as autotag).
+- [POST /api/data-engine/v1/leads/tag](api.html#tag): Tag leads in bulk.
+- [POST /api/data-engine/v1/leads/update](api.html#update): Update leads in bulk.
+- [POST /api/data-engine/v1/push/initial-sms](api.html#push-initial-sms): Stage an Initial SMS block.
+- [POST /api/data-engine/v1/push/contact-center](api.html#push-contact-center): Queue for the Contact Center.
+- [POST /api/data-engine/v1/push/dialer](api.html#push-dialer): Push leads to the dialer.
+
+## SDK and MCP
+- [SDK](sdk.html): Zero-dependency JavaScript client with TypeScript types. Node 18+, Deno, Bun, edge.
+- [MCP](mcp.html): 11 tools for AI assistants. Nextier operators today; client access is the next build.
+
+## Build Packs
+- [Build Packs](build-packs.html): A working execution system, set up in your own workspace.
+- [Data Engine](data-engine.html): From a territory to an owner you can call. Every parcel in your territory, the signal that says why now, the owner behind it, and their phones and emails, ranked. It ends at click to call.
+- [Campaign Engine](campaign-engine.html): Initial SMS sent and delivered. Then the replies. One approved first text to a whole block, sent across your own lines through every carrier and compliance check. Replies come back on the same number, get answered, and become booked calls.
+- [Pipeline Engine](pipeline-engine.html): Every reply worked, in order. One record of truth. Every outcome goes through one router, every attempt sits in one ledger, and the people who raised a hand are on top. The machine does the clerical work and stops where judgment starts.
+
+## Admin
+- [Plans](plans.html): API, done with you, done for you and managed. Every plan runs on your own accounts.
+
+## OpenAPI Spec
+- [openapi](openapi.json)

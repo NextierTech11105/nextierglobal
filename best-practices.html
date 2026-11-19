@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Best Practices · Nextier Global</title>
+<meta name="description" content="Start with the smallest useful request, read the response in layers, keep labels aligned, stage instead of send, and avoid the common mistakes.">
+<link rel="canonical" href="https://www.nextierglobal.ai/best-practices.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Nextier Global">
+<meta property="og:title" content="Best Practices · Nextier Global">
+<meta property="og:description" content="Start with the smallest useful request, read the response in layers, keep labels aligned, stage instead of send, and avoid the common mistakes.">
+<meta property="og:url" content="https://www.nextierglobal.ai/best-practices.html">
+<meta property="og:image" content="https://www.nextierglobal.ai/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#040a1f">
+<link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;700&family=Montserrat:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body class="doc-page">
+<header class="top"><div class="in">
+  <a class="brand" href="./" aria-label="Nextier Global home"><svg class="mk-s" viewBox="0 0 200 200" role="img" aria-label="Nextier Global">
+<defs>
+<linearGradient id="mb1h" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5fcbff"/><stop offset="1" stop-color="#1f5bff"/></linearGradient>
+<linearGradient id="mb2h" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#2f74ff"/><stop offset="1" stop-color="#1846d8"/></linearGradient>
+<linearGradient id="mo1h" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb23d"/><stop offset="1" stop-color="#ff6a1f"/></linearGradient>
+<linearGradient id="mo2h" x1="1" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ff3b4e"/><stop offset="1" stop-color="#ff7424"/></linearGradient>
+<linearGradient id="mhh" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#72d3ff"/><stop offset="1" stop-color="#1d5cff"/></linearGradient>
+</defs>
+<path fill="url(#mb1h)" d="M14 14H72L128 100H72Z"/>
+<path fill="url(#mb2h)" d="M14 186H72L128 100H72Z"/>
+<path fill="url(#mo1h)" d="M186 14H128L72 100H128Z"/>
+<path fill="url(#mo2h)" d="M186 186H128L72 100H128Z"/>
+<path fill="url(#mhh)" stroke="#060d26" stroke-width="9" stroke-linejoin="round" d="M100 61L134 80.5V119.5L100 139L66 119.5V80.5Z"/>
+<path fill="none" stroke="#b5ecff" stroke-opacity=".6" stroke-width="2.4" d="M100 74L122.5 87V113L100 126L77.5 113V87Z"/>
+</svg><span>NEX<b>TIER</b> GLOBAL</span></a>
+  <nav class="nav" aria-label="Main"><a href="build-packs.html">Build Packs</a><a href="api.html">API</a><a href="sdk.html">SDK</a><a href="mcp.html">MCP</a><a href="docs.html" aria-current="page">Docs</a><a href="plans.html">Plans</a><a class="cta" href="https://www.nxtier.ai/book/nextier" target="_blank" rel="noopener">Request a key</a></nav>
+</div></header>
+<main>
+<div class="wrap docs">
+<aside class="toc" aria-label="On this page"><b>Best practices</b><a href="#small">Smallest useful request</a><a href="#which">Signals or leads?</a><a href="#layers">Read in layers</a><a href="#labels">Keep labels aligned</a><a href="#stage">Stage, never send</a><a href="#budget">Budget your calls</a><a href="#mistakes">Common mistakes</a><a href="#other">Another endpoint</a></aside>
+<article class="doc">
+<h1>Best practices</h1>
+<p>This assumes you already have a working request. It covers how to make it better.</p>
+
+<h2 id="small">Start with the smallest useful request</h2>
+<p>Net-new signals for your workspace, last 30 days by default:</p>
+<div class="tabs" role="tablist"><button type="button" role="tab" aria-selected="true">curl</button><button type="button" role="tab" aria-selected="false">SDK</button></div>
+<div class="tabpanes"><pre><code>curl "https://www.nxtier.ai/api/data-engine/v1/signals/net-new" \
+  -H "x-api-key: $NEXTIER_API_KEY"</code></pre><pre hidden><code>const { signals } = await nx.signals.netNew();</code></pre></div>
+<p>Add a parameter only when you need it:</p>
+<div class="tbl"><table><thead><tr><th>Parameter</th><th>Add it when</th></tr></thead><tbody>
+<tr><td><code>since</code></td><td>You want a window other than the last 30 days</td></tr>
+<tr><td><code>family</code></td><td>You work one signal family, such as <code>distress</code></td></tr>
+<tr><td><code>limit</code></td><td>You want fewer rows. Up to 5,000</td></tr>
+</tbody></table></div>
+
+<h2 id="which">Signals or leads?</h2>
+<div class="tbl"><table><thead><tr><th>Need</th><th>Start with</th></tr></thead><tbody>
+<tr><td>What changed, and why now</td><td><code>GET /signals/net-new</code></td></tr>
+<tr><td>Who to work today</td><td><code>GET /leads?tag=EXECUTION_READY</code></td></tr>
+<tr><td>Every lead with a tag, every page</td><td><code>nx.leads.listAll({ tag })</code></td></tr>
+<tr><td>What a field means and how often it's re-checked</td><td><code>GET /fields</code></td></tr>
+</tbody></table></div>
+
+<h2 id="layers">Read the response in layers</h2>
+<pre><code>{
+  "event_type": "NET_NEW_PRE_FORECLOSURE",
+  "field_name": "pre_foreclosure",
+  "lead_id": "lead_01J…",
+  "detected_at": "2026-10-24T11:02:51.000Z",
+  "signal_family": "distress",
+  "truth_class": "verified_net_new"
+}</code></pre>
+<ul>
+<li><b>event_type</b> says what happened. <b>detected_at</b> says when it was found.</li>
+<li><b>truth_class</b> <code>verified_net_new</code> means a first detection or a step up the ladder, not an old record seen again.</li>
+<li><b>lead_id</b> can be null. Only leads can be labeled or staged, so check it first.</li>
+</ul>
+
+<h2 id="labels">Label at origin, then keep labels aligned</h2>
+<p>Run <code>mode: "origin"</code> once when leads arrive. After every enrichment, scrub or signal update, run <code>mode: "dynamic"</code>. It re-stamps current-state labels and leaves origin labels alone.</p>
+<pre><code>await nx.leads.autotag({ leadIds: newIds });   // born tagged
+await nx.leads.autotag({ mode: "dynamic" });   // after every change</code></pre>
+
+<h2 id="stage">Stage, never send</h2>
+<p>Push endpoints hand work to people. Each one returns a <code>launchUrl</code> or <code>dialerUrl</code> and counts the leads it skipped. Ineligible leads are skipped, never queued. Show the person the link. Don't report a push as sent.</p>
+
+<h2 id="budget">Budget your calls</h2>
+<ul>
+<li>Every call is metered on your key. Batch bulk work.</li>
+<li><code>listAll</code> pages at 200, the maximum.</li>
+<li>Reads are safe to retry with backoff on 429 and 5xx. Pushes are not.</li>
+<li>Record the request and the count it returned, so a regression can be reproduced.</li>
+</ul>
+
+<h2 id="mistakes">Common mistakes</h2>
+<div class="tbl"><table><thead><tr><th>Instead of</th><th>Use</th></tr></thead><tbody><tr><td>POST /leads/score in new code</td><td>POST /leads/autotag. Same rule, same body.</td></tr><tr><td>Setting status, stage or journey through /leads/update</td><td>The disposition flow in nxtier.ai. The API rejects those fields.</td></tr><tr><td>Removing journey or compliance tags with /leads/tag</td><td>Nothing. That endpoint only touches your own tags.</td></tr><tr><td>Retrying a push after a timeout</td><td>Read the launch page or GET /leads first. The SDK never retries a push.</td></tr><tr><td>Expecting /push/initial-sms to send</td><td>It stages a held block. A person presses Send.</td></tr><tr><td>One lead per call</td><td>Batches: 200 leads per page, 500 rows per dialer push.</td></tr><tr><td>A header to switch workspace</td><td>That workspace's own key.</td></tr><tr><td>The key in a browser or a mobile app</td><td>Your server. The key is a secret.</td></tr></tbody></table></div>
+
+<h2 id="other">When to use another endpoint</h2>
+<div class="tbl"><table><thead><tr><th>Task</th><th>Use</th></tr></thead><tbody>
+<tr><td>Bulk first texts for a block</td><td><code>POST /push/initial-sms</code></td></tr>
+<tr><td>Calls worked by your team, by signal</td><td><code>POST /push/contact-center</code></td></tr>
+<tr><td>Your own rows onto the power dialer</td><td><code>POST /push/dialer</code></td></tr>
+<tr><td>Your own tags on many leads</td><td><code>POST /leads/tag</code></td></tr>
+<tr><td>Priority, score, notes or campaign name</td><td><code>POST /leads/update</code></td></tr>
+<tr><td>A person asking questions through an AI assistant</td><td><a href="mcp.html">MCP</a></td></tr>
+</tbody></table></div>
+</article></div>
+</main>
+<footer><div class="wrap in"><span>© 2026 Nextier Technologies</span><span><a href="build-packs.html">Build Packs</a> · <a href="api.html">API</a> · <a href="sdk.html">SDK</a> · <a href="mcp.html">MCP</a> · <a href="docs.html">Docs</a> · <a href="plans.html">Plans</a></span></div></footer>
+<script src="assets/site.js"></script>
+</body>
+</html>
