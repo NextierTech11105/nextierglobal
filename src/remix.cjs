@@ -31,7 +31,7 @@ module.exports = function remix(h) {
     const f = FILMS[k];
     const media = f.mp4
       ? `<video controls playsinline preload="metadata" src="${FLOW}${f.mp4}#t=0.1"${f.mobile ? ` data-mobile="${FLOW}${f.mobile}#t=0.1"` : ""}></video>`
-      : `<iframe src="${FLOW}${f.page}" loading="lazy" allow="autoplay; fullscreen" allowfullscreen title="${esc(f.name)}"></iframe>`;
+      : `<button type="button" class="play" data-src="${FLOW}${f.page}" data-title="${esc(f.name)}" aria-label="Play ${esc(f.name)}"><span class="pi" aria-hidden="true"></span><b>${esc(f.name)}</b><span class="pt">Press play</span></button>`;
     return `<figure class="film${f.phone ? " phone" : ""}${f.mp4 ? " mp4" : ""}"><div class="frame">${media}</div><figcaption><b>${esc(f.name)}</b>${f.line ? `<span>${esc(f.line)}</span>` : ""}<a href="${FLOW}${f.page}" target="_blank" rel="noopener">Full screen ↗</a></figcaption></figure>`;
   };
   const heroBtn = (o, label, cls) => (o && o.link ? `<a class="${cls}" href="${esc(o.link)}">${esc(label)} · ${esc(o.price)}</a>` : `<a class="${cls}" href="#own">${esc(label)}</a>`);

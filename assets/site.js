@@ -39,3 +39,17 @@
   if (!window.matchMedia || !matchMedia("(max-width: 640px)").matches) return;
   document.querySelectorAll("video[data-mobile]").forEach(function (v) { v.src = v.getAttribute("data-mobile"); });
 })();
+
+// HTML films load on the press, so the sound can play and the page stays light.
+(function () {
+  document.querySelectorAll(".film .play").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var f = document.createElement("iframe");
+      f.src = b.getAttribute("data-src");
+      f.title = b.getAttribute("data-title") || "Film";
+      f.setAttribute("allow", "autoplay; fullscreen");
+      f.setAttribute("allowfullscreen", "");
+      b.replaceWith(f);
+    });
+  });
+})();
