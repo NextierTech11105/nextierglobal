@@ -89,6 +89,24 @@ html,body{margin:0;height:100%;overflow:hidden;background:#000;color:#fff;font:5
 .stamp.in{opacity:1;transform:rotate(-2deg)}
 .stamp .w{font:800 21px 'Archivo',Arial,sans-serif;letter-spacing:.06em;white-space:nowrap}
 .stamp .s{font:800 27px 'Archivo',Arial,sans-serif;color:#8ff5c4;letter-spacing:.03em;white-space:nowrap}
+/* the real screen: clips from his favorite films, the live wizard */
+.screen{position:relative;width:480px;height:270px;margin-top:12px;border-radius:14px;overflow:hidden;border:2px solid #2a3442;background:#000;
+  box-shadow:0 0 34px rgba(47,139,255,.22);opacity:0;transform:translateY(10px) scale(.97);transition:opacity .45s,transform .45s}
+.screen.in{opacity:1;transform:none}
+.screen.hide{display:none}
+.screen video,.screen .wiz{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .3s;border:0}
+.screen .wiz{width:1280px;height:720px;transform:scale(.375);transform-origin:0 0;pointer-events:none;background:#000}
+.screen .live{opacity:1}
+.screen .src{position:absolute;left:8px;bottom:8px;z-index:2;font:800 13px 'Archivo',Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase;background:rgba(0,0,0,.72);border:1px solid #2a3442;border-radius:999px;padding:3px 10px}
+.side.clip .body{margin-top:10px;gap:7px}
+.side.clip .chip{font-size:19px;padding:5px 11px;border-radius:11px}
+.side.clip .stamp{padding:7px 14px}
+.side.clip .stamp .s{font-size:22px}
+.side.clip .stamp .w{font-size:17px}
+.side.clip .ttl{font-size:40px}
+#map .dot{fill:#ffb27a;filter:url(#gl)}
+#map .nd.on rect{animation:nodepop .7s ease-out}
+@keyframes nodepop{0%{stroke-width:10}100%{stroke-width:3.5}}
 .note{margin-top:auto;border:2px solid var(--orange);border-radius:20px;background:#140b04;padding:12px 18px 14px;transition:opacity .4s,transform .4s;font-weight:700;font-size:21px;line-height:1.32}
 .note.off{opacity:0;transform:translateY(18px)}
 .note .nh{display:block;font:800 15px 'Archivo',Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#ffe2cc;margin-bottom:4px}
@@ -122,6 +140,12 @@ html,body{margin:0;height:100%;overflow:hidden;background:#000;color:#fff;font:5
     <div class="lab" id="lab"></div>
     <div class="ttl" id="ttl"></div>
     <div class="sub" id="sub"></div>
+    <div class="screen hide" id="screen">
+      <video id="v-comm" muted playsinline preload="auto"></video>
+      <video id="v-bronx" muted playsinline preload="auto"></video>
+      <iframe class="wiz" id="v-wiz" title="The Execution Wizard" tabindex="-1"></iframe>
+      <div class="src" id="srcl"></div>
+    </div>
     <div class="body" id="body"></div>
     <div class="note off" id="note"></div>
   </section>
@@ -193,6 +217,10 @@ html,body{margin:0;height:100%;overflow:hidden;background:#000;color:#fff;font:5
     "dec-closed": ["252,84 252,108 1048,108 1048,263"],
   };
   var EL = { adv: [302, 199, "Advance"], cont: [887, 199, "Continue"], decl: [1048, 199, "Decline / Suppress"], dir: [302, 760, "Director Optimization"] };
+  var defs = el("defs", {});
+  var gl = el("filter", { id: "gl", x: "-200%", y: "-200%", width: "500%", height: "500%" }, defs);
+  el("feGaussianBlur", { stdDeviation: "4", result: "b" }, gl);
+  var fm = el("feMerge", {}, gl); el("feMergeNode", { "in": "b" }, fm); el("feMergeNode", { "in": "SourceGraphic" }, fm);
   var lay = el("g", { "class": "lay" });
   el("rect", { x: 540, y: 1150, width: 430, height: 560, rx: 18 }, lay);
   var lt = el("text", { x: 755, y: 1180 }, lay); lt.textContent = "MODULAR EXECUTION LAYERS";
@@ -245,8 +273,38 @@ html,body{margin:0;height:100%;overflow:hidden;background:#000;color:#fff;font:5
     later(delay, function () { d.classList.add("in"); });
     return d;
   }
+  // real screens: Communication OS + the Bronx file (nextier-flow media), the live wizard. ?local=1 = files next to this page.
+  var LOCAL = Q.get("local") === "1";
+  var FLOWM = LOCAL ? "" : "https://nextiertech11105.github.io/nextier-flow/media/";
+  var V = { comm: $("v-comm"), bronx: $("v-bronx") };
+  V.comm.src = FLOWM + "communication-os.mp4"; V.bronx.src = FLOWM + "bronx-file.mp4";
+  var wiz = $("v-wiz"), screen = $("screen"), srcl = $("srcl"), side = document.querySelector(".side");
+  var SRC = { comm: "Communication OS · real numbers, names changed", bronx: "The Bronx file · in contract", wiz: "The live Execution Wizard" };
+  function clip(c) {
+    for (var k in V) { V[k].pause(); V[k].classList.remove("live"); }
+    wiz.classList.remove("live"); screen.classList.remove("in");
+    if (!c.clip) { screen.classList.add("hide"); side.classList.remove("clip"); return; }
+    side.classList.add("clip"); screen.classList.remove("hide"); srcl.textContent = SRC[c.clip[0]];
+    if (c.clip[0] === "wiz") wiz.classList.add("live");
+    else { var v = V[c.clip[0]]; try { v.currentTime = c.clip[1]; } catch (x) {} v.playbackRate = SPEED; var p = v.play(); if (p && p.catch) p.catch(function () {}); v.classList.add("live"); }
+    later(200, function () { screen.classList.add("in"); });
+  }
+  // a glowing lead travels every active line
+  var dots = [];
+  function setDots(edges) {
+    dots.forEach(function (d) { d.remove(); }); dots = [];
+    edges.forEach(function (e) {
+      var pts = E[e][0].trim().split(/\s+/).map(function (p) { return p.split(",").map(Number); }), len = 0;
+      for (var i = 1; i < pts.length; i++) len += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
+      var c = el("circle", { r: 10, "class": "dot" });
+      var am = el("animateMotion", { dur: Math.max(1, len / 520) / SPEED + "s", repeatCount: "indefinite", path: "M" + pts.map(function (p) { return p.join(","); }).join(" L") }, c);
+      dots.push(c);
+      try { am.beginElement(); } catch (x) {}
+    });
+  }
   var seen = {};
   function scene(c) {
+    clip(c); setDots(c.edges || []);
     lab.textContent = c.lab || ""; ttl.textContent = c.ttl || ""; sub.textContent = c.sub || "";
     body.innerHTML = ""; note.classList.add("off");
     for (var i = 0; i < steps.length; i++) { steps[i].classList.toggle("on", i === c.step); steps[i].classList.toggle("done", i < c.step); }
@@ -274,8 +332,8 @@ html,body{margin:0;height:100%;overflow:hidden;background:#000;color:#fff;font:5
   var a1 = (A2 - A1) / 3, a2 = (A3 - A2) / 4, a3 = (A4 - A3) / 3, a4 = (END - A4) / 2;
   var chips = function (words, gap) { return words.map(function (w) { return { chip: w, gap: gap }; }); };
   var S = [
-    { t: A1, step: 0, lab: "1 · The Wizard", ttl: "Execution Wizard", sub: "The questions set the shape.", on: ["wiz", "wizq"], edges: ["wiz-wizq"],
-      items: chips(["WHO", "WHAT", "WHY", "WHERE", "WHEN", "HOW", "HOW OFTEN", "VOLUME", "ROLES", "OUTCOME"], 330),
+    { t: A1, step: 0, lab: "1 · The Wizard", ttl: "Execution Wizard", sub: "The questions set the shape.", on: ["wiz", "wizq"], edges: ["wiz-wizq"], clip: ["wiz"],
+      items: chips(["WHO", "WHAT", "WHY", "WHERE", "WHEN", "HOW", "HOW OFTEN", "VOLUME", "ROLES", "OUTCOME"], 300),
       nh: "The Wizard determines", note: "Pursuit strategy, environment, roles, channels, capacity, cadence and desired outcome." },
     { t: A1 + a1, step: 1, lab: "2 · Configure", ttl: "Configuration Compiler", sub: "Execution Blueprint + Contracts", on: ["comp"], frame: ["wizq", "comp"], edges: ["wizq-comp"],
       items: [{ row: "Data Contract", k: "01", small: "Who qualifies, what signals matter" }, { row: "Pursuit Contract", k: "02", small: "Channel, cadence, message, block size" },
@@ -284,26 +342,28 @@ html,body{margin:0;height:100%;overflow:hidden;background:#000;color:#fff;font:5
     { t: A1 + 2 * a1, step: 2, lab: "3 · Repeatable initial outreach", ttl: "Intentional Outreach Harness", sub: "Universal Execution Core", on: ["harn", "gov"], frame: ["comp", "harn", "gov"], edges: ["comp-harn", "harn-gov"],
       items: [{ chip: "RBAC" }, { chip: "Compliance" }, { chip: "Capacity" }, { chip: "Audit" }],
       nh: "Governance", note: "Human approval governs advancement. STOP/DNC, consent, quiet hours and capacity rules can block or end execution at every stage." },
-    { t: A2, step: 3, lab: "4 · Modular execution layers", ttl: "Data Engine", on: ["data"], frame: ["harn", "data"], layers: 1, edges: ["harn-data"], items: chips(["Target", "Refine", "Score", "Monitor"], 420) },
-    { t: A2 + a2, step: 3, lab: "4 · Modular execution layers", ttl: "Pursuit Engine", on: ["purs"], frame: ["data", "purs"], layers: 1, edges: ["data-purs"], items: chips(["Blocks", "Cadence", "Attempts", "Triggers"], 420) },
-    { t: A2 + 2 * a2, step: 3, lab: "4 · Modular execution layers", ttl: "Omnichannel Adapters", on: ["omni"], frame: ["purs", "omni"], layers: 1, edges: ["purs-omni"],
-      items: [{ chip: "SMS", gap: 300 }, { chip: "Voice", gap: 300 }, { chip: "Email", gap: 300 }, { chip: "Field", gap: 300 }, { chip: "Social", cls: "soon", gap: 300 }, { chip: "Mail", cls: "soon", gap: 300 }, { chip: "Other", gap: 300 }] },
-    { t: A2 + 3 * a2, step: 3, lab: "4 · Modular execution layers", ttl: "Inbound Refinery", on: ["refi"], frame: ["omni", "refi"], layers: 1, edges: ["omni-refi"],
-      items: [{ msg: "<b>The text we sent · Jul 18</b>Hi <i>first name</i>, open to a 15-min call to review numbers?", side: "a", gap: 700 }, { msg: "<b>A real reply · Jul 19</b>Ok", side: "c", gap: 700 }, { br: 1 },
-        { chip: "Detect", gap: 260 }, { chip: "Classify", gap: 260 }, { chip: "Prioritize", gap: 260 }, { chip: "Route", gap: 260 }],
-      nh: "Full digital and humanized observation", note: "Classifies and prioritizes inbound replies and the execution workflows. Consistent, but adaptable." },
-    { t: A3, step: 4, lab: "5 · AI tasks", ttl: "Digital Workforce", sub: "Context · Recommendations · Handoffs", on: ["work"], frame: ["refi", "work"], edges: ["refi-work"],
-      items: chips(["Detects", "Prepares", "Classifies", "Recommends"], 360).concat([{ chip: "Executes within approved boundaries", cls: "ok" }]) },
-    { t: A3 + a3, step: 5, lab: "6 · Role tasks", ttl: "Human Execution", sub: "Advisor · Agent · Specialist", on: ["hum"], frame: ["work", "hum"], edges: ["work-hum"],
-      items: [{ row: "Takes the conversation", k: "→" }, { row: "Demonstrates competency", k: "→" }, { row: "Follows through", k: "→" }] },
+    { t: A2, step: 3, lab: "4 · Modular execution layers", ttl: "Data Engine", sub: "Target · Refine · Score · Monitor", on: ["data"], frame: ["harn", "data"], layers: 1, edges: ["harn-data"], clip: ["comm", 8.6],
+      items: chips(["Target", "Refine", "Score", "Monitor"], 380) },
+    { t: A2 + a2, step: 3, lab: "4 · Modular execution layers", ttl: "Pursuit Engine", sub: "Blocks · Cadence · Attempts · Triggers", on: ["purs"], frame: ["data", "purs"], layers: 1, edges: ["data-purs"], clip: ["comm", 23.4],
+      items: chips(["Blocks", "Cadence", "Attempts", "Triggers"], 380) },
+    { t: A2 + 2 * a2, step: 3, lab: "4 · Modular execution layers", ttl: "Omnichannel Adapters", on: ["omni"], frame: ["purs", "omni"], layers: 1, edges: ["purs-omni"], clip: ["comm", 30.5],
+      items: [{ chip: "SMS", gap: 260 }, { chip: "Voice", gap: 260 }, { chip: "Email", gap: 260 }, { chip: "Field", gap: 260 }, { chip: "Social", cls: "soon", gap: 260 }, { chip: "Mail", cls: "soon", gap: 260 }, { chip: "Other", gap: 260 }] },
+    { t: A2 + 3 * a2, step: 3, lab: "4 · Modular execution layers", ttl: "Inbound Refinery", on: ["refi"], frame: ["omni", "refi"], layers: 1, edges: ["omni-refi"], clip: ["comm", 39.5],
+      items: chips(["Detect", "Classify", "Prioritize", "Route"], 300),
+      nh: "Full digital and humanized observation", note: "Classifies and prioritizes inbound replies and the execution workflows. Consistent, but adaptable.", noteAt: 1500 },
+    { t: A3, step: 4, lab: "5 · AI tasks · the digital front desk", ttl: "Digital Workforce", sub: "118 calls · Oct 5 → Nov 17", on: ["work"], frame: ["refi", "work"], edges: ["refi-work"], clip: ["comm", 61],
+      items: [{ chip: "94 Answered", gap: 300 }, { chip: "42 Handled", gap: 300 }, { chip: "12 Qualified", gap: 300 }, { chip: "7 Booked", cls: "ok", gap: 300 }],
+      nh: "AI tasks", note: "Detects · Prepares · Classifies · Recommends · Executes within approved boundaries.", noteAt: 1700 },
+    { t: A3 + a3, step: 5, lab: "6 · Role tasks", ttl: "Human Execution", sub: "Advisor · Agent · Specialist", on: ["hum"], frame: ["work", "hum"], edges: ["work-hum"], clip: ["comm", 85.5],
+      items: chips(["Takes the conversation", "Demonstrates competency", "Follows through"], 380) },
     { t: A3 + 2 * a3, step: 6, lab: "7 · A person decides", ttl: "Human Decision", on: ["dec", "disc", "follow", "closed"], frame: ["dec", "disc", "follow", "closed"], pad: 24, edges: ["hum-dec", "dec-disc", "dec-follow", "dec-closed"], labels: ["adv", "cont", "decl"],
       items: [{ row: "Advance", k: "↑", small: "Discovery" }, { row: "Continue", k: "↻", small: "Follow-up / Nurture → back to the Pursuit Engine" }, { row: "Decline / Suppress", k: "×", small: "Closed / Suppressed" }],
       note: "Logs · Updates · Trackable, traceable lead journeys." },
-    { t: A4, step: 7, lab: "8 · Origination", ttl: "Discovery → Qualified Deal Origination", sub: "Booked → Completed · Ownership · Next Step · Visibility", on: ["disc", "qual"], frame: ["dec", "disc", "qual"], edges: ["dec-disc", "disc-qual"], labels: ["adv"],
-      items: [{ stamp: "The Bronx · NY", s: "IN CONTRACT", gap: 1400 }, { stamp: "New Windsor · NY", s: "ACCEPTED OFFER", gap: 1200 }],
-      note: "15-minute Discovery, booked and confirmed completed by a person. Then an accountable deal owner." },
-    { t: A4 + a4, step: 7, lab: "8 · Origination", ttl: "Performance Intelligence", sub: "Conversion · Coverage · Leakage", on: ["perf", "comp"], frame: ["qual", "perf", "comp"], edges: ["qual-perf", "perf-comp"], labels: ["dir"],
-      items: chips(["Conversion", "Coverage", "Leakage"], 450).concat([{ row: "Director Optimization", k: "↺", small: "Back into the Configuration Compiler" }]) },
+    { t: A4, step: 7, lab: "8 · Origination", ttl: "Discovery → Qualified Deal Origination", sub: "Booked → Completed · Ownership · Next Step · Visibility", on: ["disc", "qual"], frame: ["dec", "disc", "qual"], edges: ["dec-disc", "disc-qual"], labels: ["adv"], clip: ["bronx", 74.4],
+      items: [{ stamp: "The Bronx · NY", s: "IN CONTRACT", gap: 1600 }, { stamp: "New Windsor · NY", s: "ACCEPTED OFFER", gap: 1200 }],
+      note: "15-minute Discovery, booked and confirmed completed by a person. Then an accountable deal owner.", noteAt: 4200 },
+    { t: A4 + a4, step: 7, lab: "8 · Origination", ttl: "Performance Intelligence", sub: "Conversion · Coverage · Leakage", on: ["perf", "comp"], frame: ["qual", "perf", "comp"], edges: ["qual-perf", "perf-comp"], labels: ["dir"], clip: ["comm", 96.6],
+      items: chips(["Conversion", "Coverage", "Leakage"], 420).concat([{ chip: "↺ Director Optimization → Configuration Compiler", cls: "hot" }]) },
   ];
 
   // ───────── the clock ─────────
@@ -317,6 +377,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:#000;color:#fff;font:5
     timers.forEach(clearTimeout); timers = [];
     if (MUSIC && SPEED === 1) { song.currentTime = 0; song.volume = 1; var p = song.play(); if (p && p.catch) p.catch(function () {}); }
     $("go").style.display = "none"; $("fine").style.display = "none";
+    if (!wiz.getAttribute("src")) wiz.src = "wizard/index.html";
     camTo([-20, -20, 1240, 2040], 10);
     at(A1 - 0.7, function () { $("open").classList.add("off"); });
     S.forEach(function (c) { at(c.t, function () { scene(c); }); });
@@ -326,7 +387,10 @@ html,body{margin:0;height:100%;overflow:hidden;background:#000;color:#fff;font:5
     at(TOTAL, function () { if (REC) console.log("DONE " + Date.now()); });
   }
   $("go").addEventListener("click", start);
-  if (REC) (document.fonts ? document.fonts.ready : Promise.resolve()).then(function () { setTimeout(start, 400); });
+  // the wizard + both films load while the title card shows
+  wiz.src = "wizard/index.html";
+  function ready(v) { return new Promise(function (r) { if (v.readyState >= 4) return r(); v.addEventListener("canplaythrough", r, { once: true }); setTimeout(r, 12000); }); }
+  if (REC) Promise.all([document.fonts ? document.fonts.ready : 0, ready(V.comm), ready(V.bronx)]).then(function () { setTimeout(start, 1500); });
 })();
 </script>
 </body>
