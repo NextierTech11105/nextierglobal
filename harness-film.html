@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Intentional Outreach Harness · Nextier</title>
+<meta name="description" content="The Intentional Outreach Harness as a film: Wizard → Configuration → Execution → Origination. Agnostic, wizard-configured, human-governed.">
+<link rel="icon" href="assets/nextier-mark.png" type="image/png">
+<!--
+  THE HARNESS — film. 2026-11-19, from Thomas's diagram + doc, in the Communication OS look (his ask: "look for communication OS · and deal origination").
+  Song: ADHD Relief whole (assets/adhd-relief-108s.m4a, 108.22 s). Acts start on its bars: 7.036 · 36.223 · 58.932 · 75.14 · end 94.598.
+  ?rec=1 = recorder mode (no controls, no audio, starts itself) · ?speed=4 = quick check · ?music=0 = no music.
+  Words are his diagram's. The two deals are the public Deal Origination Terminal's: The Bronx (in contract), New Windsor (accepted offer).
+  The reply "Ok" is New Windsor's real reply, Jul 19. No names, phones or house numbers.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=IBM+Plex+Sans:wght@500;600;700&display=swap">
+<style>
+:root{--line:#2a3442;--orange:#ff8a3d;--green:#12b76a;--blue:#2f8bff;--cyan:#22d3ee;--gold:#d9b25c;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#000;color:#fff;font:500 18px/1.4 'IBM Plex Sans','Segoe UI',Arial,sans-serif}
+#stage{position:absolute;left:50%;top:50%;width:1280px;height:720px;transform:translate(-50%,-50%);transform-origin:center;overflow:hidden;
+  background:radial-gradient(ellipse at 26% 56%,#0c1838 0%,#05080f 48%,#000 100%)}
+.top{position:absolute;left:0;right:0;top:0;height:70px;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:0 20px;border-bottom:1px solid #141c27}
+.brand{display:flex;align-items:center;gap:10px;font:800 14px/1.2 'Archivo',Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap}
+.brand img{height:26px;width:auto}
+.brand span{color:var(--orange)}
+.stepbar{display:flex;gap:6px;list-style:none;margin:0;padding:0;counter-reset:st}
+.stepbar li{counter-increment:st;border:1px solid var(--line);border-radius:999px;padding:5px 10px;font:800 14px 'Archivo',Arial,sans-serif;background:#06080b;white-space:nowrap;transition:background .3s,border-color .3s}
+.stepbar li::before{content:counter(st) " ";color:var(--orange)}
+.stepbar li.on{border-color:var(--orange);background:#2a1607}
+.stepbar li.done{border-color:var(--green)}
+.stepbar li.done::before{color:var(--green)}
+
+/* the map */
+#map{position:absolute;left:8px;top:78px;width:650px;height:636px}
+#map .nd{opacity:.22;transition:opacity .5s}
+#map .nd.seen{opacity:.55}
+#map .nd.on{opacity:1}
+#map .nd rect{fill:#0a0e16;stroke:#33425a;stroke-width:2}
+#map .nd.on rect{stroke:#fff;stroke-width:3.5}
+#map .nd.on.o rect{stroke:var(--orange);fill:#1c1006}
+#map .nd.on.g rect{stroke:var(--green);fill:#05200f}
+#map .nd.on.d rect{stroke:var(--gold);fill:#171207}
+#map .nd.on.b rect{stroke:var(--blue);fill:#06142c}
+#map .nd .t{font:800 21px 'Archivo',Arial,sans-serif;fill:#fff;text-anchor:middle;letter-spacing:.02em}
+#map .nd .t.q{font-size:18px}
+#map .nd .s{font:700 17px 'IBM Plex Sans',Arial,sans-serif;fill:#cdd8e6;text-anchor:middle}
+#map .ed{fill:none;stroke:#3a4656;stroke-width:2.5;opacity:.4;stroke-linejoin:round}
+#map .ed.dash{stroke-dasharray:5 6}
+#map .ed.on{stroke:var(--orange);opacity:1;stroke-width:4;stroke-dasharray:12 9;animation:flow .9s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-21}}
+#map .el rect{fill:#020a14;stroke:#1a3e5f;stroke-width:1.5}
+#map .el text{fill:#9cc7ff;font:700 16px 'IBM Plex Sans',Arial,sans-serif;text-anchor:middle}
+#map .el{opacity:.35;transition:opacity .5s}
+#map .el.on{opacity:1}
+#map .lay rect{fill:#121620;stroke:rgba(255,255,255,.16);stroke-width:1.5}
+#map .lay text{fill:#e8eef7;font:800 18px 'Archivo',Arial,sans-serif;letter-spacing:.06em;text-anchor:middle}
+#map .lay{opacity:.3;transition:opacity .5s}
+#map .lay.on{opacity:1}
+
+/* right side */
+.side{position:absolute;left:684px;top:90px;width:572px;bottom:18px;display:flex;flex-direction:column}
+.lab{font:800 16px 'Archivo',Arial,sans-serif;letter-spacing:.16em;color:var(--orange);text-transform:uppercase;min-height:20px}
+.ttl{font:800 46px/1.05 'Archivo',Arial,sans-serif;margin-top:6px}
+.sub{font:700 22px/1.3 'IBM Plex Sans',Arial,sans-serif;color:#dfe6ee;margin-top:8px;min-height:29px}
+.body{margin-top:16px;display:flex;flex-wrap:wrap;gap:10px;align-content:flex-start}
+.chip{font:800 24px 'Archivo',Arial,sans-serif;padding:8px 16px;border-radius:14px;border:2px solid var(--line);background:#070a0f;opacity:0;transform:translateY(12px) scale(.92);transition:opacity .35s,transform .35s,border-color .3s,background .3s}
+.chip.in{opacity:1;transform:none}
+.chip.hot{border-color:var(--orange);background:#2a1607}
+.chip.ok{border-color:var(--green);background:#06301e}
+.chip.soon{border-style:dashed;color:#ffc59a}
+.chip.soon::after{content:' soon';font-size:16px;color:var(--orange)}
+.pr{flex:0 0 100%;display:grid;grid-template-columns:46px 1fr;gap:10px;align-items:center;padding:9px 12px;border:1px solid #1a2330;border-radius:12px;background:#070a0f;
+  font:800 24px 'Archivo',Arial,sans-serif;opacity:0;transform:translateX(18px);transition:opacity .35s,transform .35s}
+.pr.in{opacity:1;transform:none}
+.pr .k{color:var(--orange);text-align:center}
+.pr .w small{display:block;font:700 17px 'IBM Plex Sans',Arial,sans-serif;color:#cdd8e6;margin-top:1px}
+.msg{max-width:86%;padding:8px 15px 10px;border-radius:18px;font-weight:700;font-size:21px;line-height:1.28;opacity:0;transform:translateY(10px);transition:opacity .35s,transform .35s}
+.msg.in{opacity:1;transform:none}
+.msg.a{flex:0 0 86%;margin-right:14%;background:#0b2346;border:1px solid var(--blue);border-bottom-left-radius:6px}
+.msg.c{flex:0 0 auto;margin-left:auto;background:#1b1f26;border:1px solid var(--line);border-bottom-right-radius:6px;font-size:30px}
+.msg b{display:block;font:800 13px 'Archivo',Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--cyan);margin-bottom:2px}
+.msg.c b{color:#dfe6ee}
+.msg i{font-style:normal;background:#173763;border-radius:6px;padding:0 6px;font-size:16px;letter-spacing:.06em;text-transform:uppercase;vertical-align:2px}
+.break{flex:0 0 100%;height:0}
+.stamp{flex:0 0 100%;display:flex;justify-content:space-between;align-items:center;gap:12px;border:3px solid var(--green);border-radius:16px;padding:12px 18px;background:#04150c;
+  opacity:0;transform:scale(1.25) rotate(-2deg);transition:opacity .25s,transform .35s cubic-bezier(.2,1.6,.4,1)}
+.stamp.in{opacity:1;transform:rotate(-2deg)}
+.stamp .w{font:800 21px 'Archivo',Arial,sans-serif;letter-spacing:.06em;white-space:nowrap}
+.stamp .s{font:800 27px 'Archivo',Arial,sans-serif;color:#8ff5c4;letter-spacing:.03em;white-space:nowrap}
+.note{margin-top:auto;border:2px solid var(--orange);border-radius:20px;background:#140b04;padding:12px 18px 14px;transition:opacity .4s,transform .4s;font-weight:700;font-size:21px;line-height:1.32}
+.note.off{opacity:0;transform:translateY(18px)}
+.note .nh{display:block;font:800 15px 'Archivo',Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#ffe2cc;margin-bottom:4px}
+
+/* title + end cards */
+.card{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;
+  background:radial-gradient(ellipse at 50% 42%,#0c1838 0%,#05080f 50%,#000 100%);transition:opacity .7s}
+.card.off{opacity:0;pointer-events:none}
+.card img{width:150px;height:auto;filter:drop-shadow(0 0 26px rgba(47,139,255,.45)) drop-shadow(0 0 22px rgba(255,138,61,.3))}
+.card .kick{font:800 17px 'Archivo',Arial,sans-serif;letter-spacing:.22em;color:var(--orange);text-transform:uppercase}
+.card h1{margin:0;font:800 66px/1.02 'Archivo',Arial,sans-serif;max-width:1000px}
+.card .flow{display:flex;gap:10px;align-items:center;font:800 24px 'Archivo',Arial,sans-serif}
+.card .flow span{border:1px solid var(--line);border-radius:999px;padding:7px 16px;background:#06080b}
+.card .flow i{font-style:normal;color:var(--orange)}
+.card .rio{font:800 30px/1.15 'Archivo',Arial,sans-serif;color:var(--orange);letter-spacing:.01em;max-width:1100px}
+.card .line{font:700 24px 'IBM Plex Sans',Arial,sans-serif;color:#dfe6ee;max-width:900px}
+.card .cta{margin-top:8px;font:800 24px 'Archivo',Arial,sans-serif;color:#000;background:#f5c04a;border:0;border-radius:16px;padding:14px 34px;cursor:pointer;text-decoration:none;box-shadow:0 0 30px rgba(245,192,74,.45)}
+.card .fine{font:700 18px 'IBM Plex Sans',Arial,sans-serif;color:#cdd8e6}
+#snd{position:absolute;right:16px;bottom:12px;z-index:6;font:800 15px 'Archivo',Arial,sans-serif;color:#fff;background:#0b0f16;border:1px solid var(--line);border-radius:999px;padding:6px 12px;cursor:pointer}
+.rec #snd,.rec #go{display:none}
+</style>
+</head>
+<body>
+<div id="stage">
+  <header class="top">
+    <div class="brand"><img src="assets/nextier-mark.png" alt="Nextier">Nextier <span>· Intentional Outreach Harness</span></div>
+    <ol class="stepbar" id="steps"><li>Wizard</li><li>Configure</li><li>Harness</li><li>Layers</li><li>Workforce</li><li>Human</li><li>Decision</li><li>Origination</li></ol>
+  </header>
+  <svg id="map" viewBox="-20 -20 1240 2040" preserveAspectRatio="xMidYMid meet" aria-label="The harness map"></svg>
+  <section class="side">
+    <div class="lab" id="lab"></div>
+    <div class="ttl" id="ttl"></div>
+    <div class="sub" id="sub"></div>
+    <div class="body" id="body"></div>
+    <div class="note off" id="note"></div>
+  </section>
+
+  <div class="card" id="open">
+    <img src="assets/nextier-mark.png" alt="Nextier">
+    <div class="kick">Agnostic execution architecture · Wizard-configured · Human-governed</div>
+    <h1>Intentional Outreach Harness</h1>
+    <div class="rio">Repeatable, high-impact, personalized initial outreach</div>
+    <div class="line">To a probable, profitable, reachable target audience.</div>
+    <div class="flow"><span>Wizard</span><i>→</i><span>Configuration</span><i>→</i><span>Execution</span><i>→</i><span>Origination</span></div>
+    <button class="cta" id="go" type="button">▶ Play</button>
+    <div class="fine" id="fine">Sound on. Under two minutes.</div>
+  </div>
+  <div class="card off" id="end">
+    <img src="assets/nextier-mark.png" alt="Nextier">
+    <div class="kick">The architectural rule</div>
+    <h1>The Wizard changes the configuration, not the engine.</h1>
+    <div class="flow"><span>Reusable</span><span>Remixable</span><span>Measurable</span><span>Governed</span></div>
+    <div class="rio">Repeatable, high-impact, personalized initial outreach</div>
+    <div class="line">To a probable, profitable, reachable target audience. B2B, B2C or real estate professionals.</div>
+    <a class="cta" id="book" href="https://www.nxtier.ai/book/nextier" target="_top">Book a call</a>
+  </div>
+  <button id="snd" type="button">🔊 Sound on</button>
+  <audio id="song" src="assets/adhd-relief-108s.m4a" preload="auto"></audio>
+</div>
+<script>
+(function () {
+  var Q = new URLSearchParams(location.search);
+  var REC = Q.get("rec") === "1", SPEED = +Q.get("speed") || 1, MUSIC = Q.get("music") !== "0" && !REC;
+  if (REC) document.body.classList.add("rec");
+  var $ = function (id) { return document.getElementById(id); };
+  var stage = $("stage");
+  function fit() { var s = Math.min(innerWidth / 1280, innerHeight / 720); stage.style.transform = "translate(-50%,-50%) scale(" + s + ")"; }
+  addEventListener("resize", fit); fit();
+
+  // ───────── the map, as he drew it ─────────
+  var NS = "http://www.w3.org/2000/svg";
+  var svg = $("map");
+  function el(tag, attrs, parent) { var e = document.createElementNS(NS, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); (parent || svg).appendChild(e); return e; }
+  // id: [cx, cy, w, h, [title lines], [sub lines], color]
+  var N = {
+    dec:    [180, 47, 250, 74, ["HUMAN DECISION"], [], "d"],
+    disc:   [302, 304, 270, 84, ["DISCOVERY"], ["Booked → Completed"], "g"],
+    qual:   [302, 450, 350, 112, ["QUALIFIED DEAL", "ORIGINATION"], ["Ownership · Next Step · Visibility"], "g"],
+    perf:   [302, 600, 350, 112, ["PERFORMANCE", "INTELLIGENCE"], ["Conversion · Coverage · Leakage"], "b"],
+    follow: [887, 444, 300, 74, ["FOLLOW-UP / NURTURE"], [], ""],
+    closed: [1048, 300, 290, 74, ["CLOSED / SUPPRESSED"], [], ""],
+    wiz:    [656, 607, 320, 74, ["EXECUTION WIZARD"], [], "b"],
+    wizq:   [656, 745, 350, 112, [], [], "b", ["WHO · WHAT · WHY · WHERE", "WHEN · HOW · HOW OFTEN", "VOLUME · ROLES · OUTCOME"]],
+    comp:   [355, 896, 350, 112, ["CONFIGURATION", "COMPILER"], ["Execution Blueprint + Contracts"], "o"],
+    harn:   [355, 1046, 350, 112, ["INTENTIONAL OUTREACH", "HARNESS"], ["Universal Execution Core"], "o"],
+    gov:    [306, 1206, 350, 100, ["GOVERNANCE"], ["RBAC · Compliance · Capacity · Audit"], ""],
+    data:   [712, 1240, 360, 88, ["DATA ENGINE"], ["Target · Refine · Score · Monitor"], "o"],
+    purs:   [752, 1370, 372, 100, ["PURSUIT ENGINE"], ["Blocks · Cadence · Attempts · Triggers"], "o"],
+    omni:   [752, 1505, 372, 112, ["OMNICHANNEL ADAPTERS"], ["SMS · Voice · Email · Social", "Field · Mail · Other"], "o"],
+    refi:   [752, 1645, 372, 100, ["INBOUND REFINERY"], ["Detect · Classify · Prioritize · Route"], "o"],
+    work:   [752, 1815, 372, 100, ["DIGITAL WORKFORCE"], ["Context · Recommendations · Handoffs"], "b"],
+    hum:    [170, 1950, 320, 88, ["HUMAN EXECUTION"], ["Advisor · Agent · Specialist"], "g"],
+  };
+  // edges: id, points, dashed
+  var E = {
+    "wiz-wizq": ["656,644 656,689"], "wizq-comp": ["656,801 656,822 408,822 408,840"], "comp-harn": ["355,952 355,990"],
+    "harn-gov": ["306,1102 306,1156", 1], "harn-data": ["420,1102 420,1124 712,1124 712,1196"], "data-purs": ["712,1284 712,1320"],
+    "purs-omni": ["752,1420 752,1449"], "omni-refi": ["752,1561 752,1595"], "refi-work": ["752,1695 752,1765"],
+    "work-hum": ["752,1865 752,1888 220,1888 220,1906"], "hum-dec": ["108,1906 108,84"],
+    "dec-disc": ["150,84 150,157 302,157 302,262"], "disc-qual": ["302,346 302,394"], "qual-perf": ["302,506 302,544"],
+    "perf-comp": ["302,656 302,840", 1], "dec-follow": ["204,84 204,132 887,132 887,407"], "follow-purs": ["887,481 887,1300 830,1300 830,1320"],
+    "dec-closed": ["252,84 252,108 1048,108 1048,263"],
+  };
+  var EL = { adv: [302, 199, "Advance"], cont: [887, 199, "Continue"], decl: [1048, 199, "Decline / Suppress"], dir: [302, 760, "Director Optimization"] };
+  var lay = el("g", { "class": "lay" });
+  el("rect", { x: 540, y: 1150, width: 430, height: 560, rx: 18 }, lay);
+  var lt = el("text", { x: 755, y: 1180 }, lay); lt.textContent = "MODULAR EXECUTION LAYERS";
+  var eNodes = {}, nNodes = {}, lNodes = {};
+  for (var k in E) eNodes[k] = el("polyline", { points: E[k][0], "class": "ed" + (E[k][1] ? " dash" : "") });
+  for (var k2 in EL) {
+    var g = el("g", { "class": "el" }), v = EL[k2], w = v[2].length * 9 + 30;
+    el("rect", { x: v[0] - w / 2, y: v[1] - 18, width: w, height: 36, rx: 18 }, g);
+    var t = el("text", { x: v[0], y: v[1] + 6 }, g); t.textContent = v[2];
+    lNodes[k2] = g;
+  }
+  for (var id in N) {
+    var n = N[id], gg = el("g", { "class": "nd " + n[6] });
+    el("rect", { x: n[0] - n[2] / 2, y: n[1] - n[3] / 2, width: n[2], height: n[3], rx: 18 }, gg);
+    var lines = (n[7] || []).map(function (x) { return [x, "t q"]; }).concat(n[4].map(function (x) { return [x, "t"]; })).concat(n[5].map(function (x) { return [x, "s"]; }));
+    var lh = lines.map(function (l) { return l[1] === "s" ? 22 : (l[1] === "t q" ? 26 : 25); });
+    var tot = lh.reduce(function (a, b) { return a + b; }, 0), y = n[1] - tot / 2;
+    lines.forEach(function (l, i) { y += lh[i]; var tx = el("text", { x: n[0], y: y - 6, "class": l[1] }, gg); tx.textContent = l[0]; });
+    nNodes[id] = gg;
+  }
+
+  // ───────── camera: tween the viewBox to the focused nodes ─────────
+  var vb = [-20, -20, 1240, 2040], anim = null;
+  function frame(ids, pad) {
+    pad = pad || 70;
+    var x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+    ids.forEach(function (i) { var n = N[i]; x0 = Math.min(x0, n[0] - n[2] / 2); x1 = Math.max(x1, n[0] + n[2] / 2); y0 = Math.min(y0, n[1] - n[3] / 2); y1 = Math.max(y1, n[1] + n[3] / 2); });
+    x0 -= pad; y0 -= pad; x1 += pad; y1 += pad;
+    var w = x1 - x0, h = y1 - y0, r = 650 / 636;
+    if (w / h > r) { var nh = w / r; y0 -= (nh - h) / 2; h = nh; } else { var nw = h * r; x0 -= (nw - w) / 2; w = nw; }
+    return [x0, y0, w, h];
+  }
+  function camTo(target, ms) {
+    var from = vb.slice(), t0 = performance.now(); ms = (ms || 1100) / SPEED;
+    if (anim) cancelAnimationFrame(anim);
+    (function step(now) {
+      var k = Math.min(1, (now - t0) / ms), e = k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+      vb = from.map(function (a, i) { return a + (target[i] - a) * e; });
+      svg.setAttribute("viewBox", vb.join(" "));
+      if (k < 1) anim = requestAnimationFrame(step);
+    })(t0);
+  }
+
+  // ───────── the side panel ─────────
+  var lab = $("lab"), ttl = $("ttl"), sub = $("sub"), body = $("body"), note = $("note"), steps = $("steps").children;
+  var timers = [];
+  function later(ms, fn) { timers.push(setTimeout(fn, ms / SPEED)); }
+  function add(html, cls, delay) {
+    var d = document.createElement("div"); d.className = cls; d.innerHTML = html; body.appendChild(d);
+    later(delay, function () { d.classList.add("in"); });
+    return d;
+  }
+  var seen = {};
+  function scene(c) {
+    lab.textContent = c.lab || ""; ttl.textContent = c.ttl || ""; sub.textContent = c.sub || "";
+    body.innerHTML = ""; note.classList.add("off");
+    for (var i = 0; i < steps.length; i++) { steps[i].classList.toggle("on", i === c.step); steps[i].classList.toggle("done", i < c.step); }
+    for (var id in nNodes) { nNodes[id].classList.remove("on"); if (seen[id]) nNodes[id].classList.add("seen"); }
+    for (var e in eNodes) eNodes[e].classList.remove("on");
+    for (var l in lNodes) lNodes[l].classList.remove("on");
+    (c.on || []).forEach(function (id) { nNodes[id].classList.add("on"); seen[id] = 1; });
+    (c.edges || []).forEach(function (e2) { eNodes[e2].classList.add("on"); });
+    (c.labels || []).forEach(function (l2) { lNodes[l2].classList.add("on"); });
+    lay.classList.toggle("on", !!c.layers);
+    camTo(frame(c.frame || c.on, c.pad));
+    var d = 650;
+    (c.items || []).forEach(function (it) {
+      if (it.chip) { var x = add(it.chip, "chip" + (it.cls ? " " + it.cls : ""), d); if (it.hot) later(d + it.hot, function () { x.classList.add("hot"); }); d += it.gap || 380; }
+      else if (it.row) { add('<span class="k">' + it.k + '</span><span class="w">' + it.row + (it.small ? "<small>" + it.small + "</small>" : "") + "</span>", "pr", d); d += it.gap || 520; }
+      else if (it.msg) { add(it.msg, "msg " + it.side, d); d += it.gap || 900; }
+      else if (it.stamp) { add('<span class="w">' + it.stamp + '</span><span class="s">' + it.s + "</span>", "stamp", d); d += it.gap || 1100; }
+      else if (it.br) { add("", "break", 0); }
+    });
+    if (c.note) later(c.noteAt || d + 300, function () { note.innerHTML = (c.nh ? '<span class="nh">' + c.nh + "</span>" : "") + c.note; note.classList.remove("off"); });
+  }
+
+  // ───────── the story: his words, on the song's bars ─────────
+  var A1 = 7.036, A2 = 36.223, A3 = 58.932, A4 = 75.14, END = 94.598, TOTAL = 108.224;
+  var a1 = (A2 - A1) / 3, a2 = (A3 - A2) / 4, a3 = (A4 - A3) / 3, a4 = (END - A4) / 2;
+  var chips = function (words, gap) { return words.map(function (w) { return { chip: w, gap: gap }; }); };
+  var S = [
+    { t: A1, step: 0, lab: "1 · The Wizard", ttl: "Execution Wizard", sub: "The questions set the shape.", on: ["wiz", "wizq"], edges: ["wiz-wizq"],
+      items: chips(["WHO", "WHAT", "WHY", "WHERE", "WHEN", "HOW", "HOW OFTEN", "VOLUME", "ROLES", "OUTCOME"], 330),
+      nh: "The Wizard determines", note: "Pursuit strategy, environment, roles, channels, capacity, cadence and desired outcome." },
+    { t: A1 + a1, step: 1, lab: "2 · Configure", ttl: "Configuration Compiler", sub: "Execution Blueprint + Contracts", on: ["comp"], frame: ["wizq", "comp"], edges: ["wizq-comp"],
+      items: [{ row: "Data Contract", k: "01", small: "Who qualifies, what signals matter" }, { row: "Pursuit Contract", k: "02", small: "Channel, cadence, message, block size" },
+        { row: "Digital Workforce Contract", k: "03", small: "What AI detects, prepares, recommends" }, { row: "Human Execution Contract", k: "04", small: "Who takes conversations, who decides" },
+        { row: "Outcome Contract", k: "05", small: "What counts as completion" }] },
+    { t: A1 + 2 * a1, step: 2, lab: "3 · Repeatable initial outreach", ttl: "Intentional Outreach Harness", sub: "Universal Execution Core", on: ["harn", "gov"], frame: ["comp", "harn", "gov"], edges: ["comp-harn", "harn-gov"],
+      items: [{ chip: "RBAC" }, { chip: "Compliance" }, { chip: "Capacity" }, { chip: "Audit" }],
+      nh: "Governance", note: "Human approval governs advancement. STOP/DNC, consent, quiet hours and capacity rules can block or end execution at every stage." },
+    { t: A2, step: 3, lab: "4 · Modular execution layers", ttl: "Data Engine", on: ["data"], frame: ["harn", "data"], layers: 1, edges: ["harn-data"], items: chips(["Target", "Refine", "Score", "Monitor"], 420) },
+    { t: A2 + a2, step: 3, lab: "4 · Modular execution layers", ttl: "Pursuit Engine", on: ["purs"], frame: ["data", "purs"], layers: 1, edges: ["data-purs"], items: chips(["Blocks", "Cadence", "Attempts", "Triggers"], 420) },
+    { t: A2 + 2 * a2, step: 3, lab: "4 · Modular execution layers", ttl: "Omnichannel Adapters", on: ["omni"], frame: ["purs", "omni"], layers: 1, edges: ["purs-omni"],
+      items: [{ chip: "SMS", gap: 300 }, { chip: "Voice", gap: 300 }, { chip: "Email", gap: 300 }, { chip: "Field", gap: 300 }, { chip: "Social", cls: "soon", gap: 300 }, { chip: "Mail", cls: "soon", gap: 300 }, { chip: "Other", gap: 300 }] },
+    { t: A2 + 3 * a2, step: 3, lab: "4 · Modular execution layers", ttl: "Inbound Refinery", on: ["refi"], frame: ["omni", "refi"], layers: 1, edges: ["omni-refi"],
+      items: [{ msg: "<b>The text we sent · Jul 18</b>Hi <i>first name</i>, open to a 15-min call to review numbers?", side: "a", gap: 700 }, { msg: "<b>A real reply · Jul 19</b>Ok", side: "c", gap: 700 }, { br: 1 },
+        { chip: "Detect", gap: 260 }, { chip: "Classify", gap: 260 }, { chip: "Prioritize", gap: 260 }, { chip: "Route", gap: 260 }],
+      nh: "Full digital and humanized observation", note: "Classifies and prioritizes inbound replies and the execution workflows. Consistent, but adaptable." },
+    { t: A3, step: 4, lab: "5 · AI tasks", ttl: "Digital Workforce", sub: "Context · Recommendations · Handoffs", on: ["work"], frame: ["refi", "work"], edges: ["refi-work"],
+      items: chips(["Detects", "Prepares", "Classifies", "Recommends"], 360).concat([{ chip: "Executes within approved boundaries", cls: "ok" }]) },
+    { t: A3 + a3, step: 5, lab: "6 · Role tasks", ttl: "Human Execution", sub: "Advisor · Agent · Specialist", on: ["hum"], frame: ["work", "hum"], edges: ["work-hum"],
+      items: [{ row: "Takes the conversation", k: "→" }, { row: "Demonstrates competency", k: "→" }, { row: "Follows through", k: "→" }] },
+    { t: A3 + 2 * a3, step: 6, lab: "7 · A person decides", ttl: "Human Decision", on: ["dec", "disc", "follow", "closed"], frame: ["dec", "disc", "follow", "closed"], pad: 24, edges: ["hum-dec", "dec-disc", "dec-follow", "dec-closed"], labels: ["adv", "cont", "decl"],
+      items: [{ row: "Advance", k: "↑", small: "Discovery" }, { row: "Continue", k: "↻", small: "Follow-up / Nurture → back to the Pursuit Engine" }, { row: "Decline / Suppress", k: "×", small: "Closed / Suppressed" }],
+      note: "Logs · Updates · Trackable, traceable lead journeys." },
+    { t: A4, step: 7, lab: "8 · Origination", ttl: "Discovery → Qualified Deal Origination", sub: "Booked → Completed · Ownership · Next Step · Visibility", on: ["disc", "qual"], frame: ["dec", "disc", "qual"], edges: ["dec-disc", "disc-qual"], labels: ["adv"],
+      items: [{ stamp: "The Bronx · NY", s: "IN CONTRACT", gap: 1400 }, { stamp: "New Windsor · NY", s: "ACCEPTED OFFER", gap: 1200 }],
+      note: "15-minute Discovery, booked and confirmed completed by a person. Then an accountable deal owner." },
+    { t: A4 + a4, step: 7, lab: "8 · Origination", ttl: "Performance Intelligence", sub: "Conversion · Coverage · Leakage", on: ["perf", "comp"], frame: ["qual", "perf", "comp"], edges: ["qual-perf", "perf-comp"], labels: ["dir"],
+      items: chips(["Conversion", "Coverage", "Leakage"], 450).concat([{ row: "Director Optimization", k: "↺", small: "Back into the Configuration Compiler" }]) },
+  ];
+
+  // ───────── the clock ─────────
+  var song = $("song"), snd = $("snd");
+  function setSnd() { snd.textContent = song.muted ? "🔇 Sound off" : "🔊 Sound on"; }
+  snd.addEventListener("click", function () { song.muted = !song.muted; setSnd(); });
+  function at(t, fn) { timers.push(setTimeout(fn, (t * 1000) / SPEED)); }
+  var started = false;
+  function start() {
+    if (started) return; started = true;
+    timers.forEach(clearTimeout); timers = [];
+    if (MUSIC && SPEED === 1) { song.currentTime = 0; song.volume = 1; var p = song.play(); if (p && p.catch) p.catch(function () {}); }
+    $("go").style.display = "none"; $("fine").style.display = "none";
+    camTo([-20, -20, 1240, 2040], 10);
+    at(A1 - 0.7, function () { $("open").classList.add("off"); });
+    S.forEach(function (c) { at(c.t, function () { scene(c); }); });
+    at(END, function () { $("end").classList.remove("off"); });
+    if (MUSIC) at(TOTAL - 2.4, function () { var v = 1, iv = setInterval(function () { v -= 0.05; song.volume = Math.max(0, v); if (v <= 0) { clearInterval(iv); song.pause(); } }, 100); });
+    if (REC) console.log("START " + Date.now());
+    at(TOTAL, function () { if (REC) console.log("DONE " + Date.now()); });
+  }
+  $("go").addEventListener("click", start);
+  if (REC) (document.fonts ? document.fonts.ready : Promise.resolve()).then(function () { setTimeout(start, 400); });
+})();
+</script>
+</body>
+</html>

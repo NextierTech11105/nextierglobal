@@ -19,6 +19,8 @@ module.exports = function remix(h) {
   // ───────────────────────────── the films: his favorites, by his own verdicts ─────────────────────────────
   const FLOW = "https://nextiertech11105.github.io/nextier-flow/";
   const FILMS = {
+    // 11-19 "the harness should be a video": harness-film.html, recorded to assets/harness.mp4 on the dev box.
+    harness: { name: "The Harness", line: "Repeatable, high-impact, personalized initial outreach.", page: "harness-film.html", mp4: "assets/harness.mp4", poster: "assets/harness-poster.jpg", local: true },
     data: { name: "Data Engine", page: "data-optimization-engine.html" }, //                       11-04 "BRO THIS IS FUCKING EPIC"
     campaign: { name: "Campaign Engine", page: "campaign-engine-run.html", phone: true }, //       11-03 "this execution story mode is savage"
     pipeline: { name: "Pipeline Engine", page: "advisor-execution.html" }, //                      11-05 "LOVE IT"
@@ -34,10 +36,11 @@ module.exports = function remix(h) {
   };
   const film = (k) => {
     const f = FILMS[k];
+    const B = f.local ? "" : FLOW;
     const media = f.mp4
-      ? `<video controls playsinline preload="metadata" src="${FLOW}${f.mp4}#t=0.1"${f.mobile ? ` data-mobile="${FLOW}${f.mobile}#t=0.1"` : ""}></video>`
-      : `<button type="button" class="play" data-src="${FLOW}${f.page}" data-title="${esc(f.name)}" aria-label="Play ${esc(f.name)}"><span class="pi" aria-hidden="true"></span><b>${esc(f.name)}</b><span class="pt">Press play</span></button>`;
-    return `<figure class="film${f.phone ? " phone" : ""}${f.mp4 ? " mp4" : ""}"><div class="frame">${media}</div><figcaption><b>${esc(f.name)}</b>${f.line ? `<span>${esc(f.line)}</span>` : ""}<a href="${FLOW}${f.page}" target="_blank" rel="noopener">Full screen ↗</a></figcaption></figure>`;
+      ? `<video controls playsinline preload="metadata" src="${B}${f.mp4}${f.poster ? "" : "#t=0.1"}"${f.poster ? ` poster="${B}${f.poster}"` : ""}${f.mobile ? ` data-mobile="${B}${f.mobile}#t=0.1"` : ""}></video>`
+      : `<button type="button" class="play" data-src="${B}${f.page}" data-title="${esc(f.name)}" aria-label="Play ${esc(f.name)}"><span class="pi" aria-hidden="true"></span><b>${esc(f.name)}</b><span class="pt">Press play</span></button>`;
+    return `<figure class="film${f.phone ? " phone" : ""}${f.mp4 ? " mp4" : ""}"><div class="frame">${media}</div><figcaption><b>${esc(f.name)}</b>${f.line ? `<span>${esc(f.line)}</span>` : ""}<a href="${B}${f.page}" target="_blank" rel="noopener">Full screen ↗</a></figcaption></figure>`;
   };
   const heroBtn = (o, label, cls) => (o && o.link ? `<a class="${cls}" href="${esc(o.link)}">${esc(label)} · ${esc(o.price)}</a>` : `<a class="${cls}" href="#own">${esc(label)}</a>`);
 
@@ -428,7 +431,7 @@ ${p.faq.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></
 <ul class="said"><li>Agnostic personalized infrastructure.</li><li>Remixable.</li><li>B2B, B2C or real estate professionals.</li></ul>
 </section>
 <section class="sec films">
-${["data", "campaign", "pipeline", "comms", "terminal"].map(film).join("\n")}
+${["harness", "data", "campaign", "pipeline", "comms", "terminal"].map(film).join("\n")}
 </section>
 <section class="sec">
 <h2>Real deals</h2>
@@ -866,9 +869,13 @@ ${L("plans.html", "Plans", "API, done with you, done for you and managed. Every 
     body: `<section class="hero">
 <div class="kicker">Agnostic execution architecture · Wizard-configured · Human-governed</div>
 <h1>Intentional Outreach Harness</h1>
+<p class="lede rio">Repeatable, high-impact, personalized initial outreach, to a probable, profitable, reachable target audience.</p>
+<ul class="said"><li>Full digital and humanized observation.</li><li>Classifies and prioritizes inbound replies and the execution workflows. Consistent, but adaptable.</li><li>Logs, updates, trackable and traceable lead journeys.</li></ul>
 <p class="about">The Wizard determines the pursuit strategy, environment, roles, communication channels, capacity, cadence and desired outcome. The harness assembles the workflows without changing its foundational architecture.</p>
 <div class="flow"><span>Wizard</span><i>→</i><span>Configuration</span><i>→</i><span>Execution</span><i>→</i><span>Origination</span></div>
 </section>
+
+<section class="sec" id="film">${film("harness")}</section>
 
 <section class="sec" id="map">
 <h2>The map</h2>
