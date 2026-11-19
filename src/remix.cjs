@@ -16,6 +16,24 @@ module.exports = function remix(h) {
   const offer = (file, which) => { const o = ((OFFERS[file] || {})[which]) || {}; return o.price ? o : null; };
   const priceTag = (o) => (o ? `<div class="price">${esc(o.price)}${o.per ? ` <span>${esc(o.per)}</span>` : ""}</div>` : "");
   const buyBtn = (o, cls = "btn primary") => (o && o.link ? `<a class="${cls}" href="${esc(o.link)}">Buy · ${esc(o.price)}</a>` : book("Book a call", cls));
+  // ───────────────────────────── the films: his favorites, by his own verdicts ─────────────────────────────
+  const FLOW = "https://nextiertech11105.github.io/nextier-flow/";
+  const FILMS = {
+    data: { name: "Data Engine", page: "data-optimization-engine.html" }, //                       11-04 "BRO THIS IS FUCKING EPIC"
+    campaign: { name: "Campaign Engine", page: "campaign-engine-run.html", phone: true }, //       11-03 "this execution story mode is savage"
+    pipeline: { name: "Pipeline Engine", page: "advisor-execution.html" }, //                      11-05 "LOVE IT"
+    comms: { name: "Communication OS", page: "communication-os.html", mp4: "media/communication-os.mp4", mobile: "media/communication-os-mobile.mp4" },
+    terminal: { name: "Deal Origination Terminal", page: "deal-origination-os.html" },
+    bronx: { name: "The Bronx file", line: "In contract.", page: "bronx-file.html", mp4: "media/bronx-file.mp4", mobile: "media/bronx-file-mobile.mp4" }, // 11-17 "THIS IS FUCKING EPIC!!!"
+    windsor: { name: "New Windsor", line: "Accepted offer.", page: "new-windsor-deal.html", mp4: "media/new-windsor-deal.mp4" }, // 11-14 "LOVE IT"
+  };
+  const film = (k) => {
+    const f = FILMS[k];
+    const media = f.mp4
+      ? `<video controls playsinline preload="metadata" src="${FLOW}${f.mp4}#t=0.1"${f.mobile ? ` data-mobile="${FLOW}${f.mobile}#t=0.1"` : ""}></video>`
+      : `<iframe src="${FLOW}${f.page}" loading="lazy" allow="autoplay; fullscreen" allowfullscreen title="${esc(f.name)}"></iframe>`;
+    return `<figure class="film${f.phone ? " phone" : ""}${f.mp4 ? " mp4" : ""}"><div class="frame">${media}</div><figcaption><b>${esc(f.name)}</b>${f.line ? `<span>${esc(f.line)}</span>` : ""}<a href="${FLOW}${f.page}" target="_blank" rel="noopener">Full screen ↗</a></figcaption></figure>`;
+  };
   const heroBtn = (o, label, cls) => (o && o.link ? `<a class="${cls}" href="${esc(o.link)}">${esc(label)} · ${esc(o.price)}</a>` : `<a class="${cls}" href="#own">${esc(label)}</a>`);
 
   // ───────────────────────────── the two ways to own a pack (Thomas, 10-08, his words) ─────────────────────────────
@@ -62,6 +80,7 @@ module.exports = function remix(h) {
     // lib/signals/changing-fields.ts, lib/eligibility/mobile-contactability.ts, api/data-engine/v1/*, api/voice/quick-call
     {
       file: "data-engine.html",
+      film: "data",
       n: "01",
       name: "Data Engine",
       line: "From a territory to an owner you can call.",
@@ -155,6 +174,7 @@ module.exports = function remix(h) {
     // lib/voice/auto-sms-on-inbound-call.ts, lib/inbound/{ai-booking,meeting-confirm,ai-training}.ts, t/[team]/email-out
     {
       file: "campaign-engine.html",
+      film: "campaign",
       n: "02",
       name: "Campaign Engine",
       line: "Initial SMS sent and delivered. Then the replies.",
@@ -243,6 +263,7 @@ module.exports = function remix(h) {
     // lib/robots/{robot-registry,robot-board,workforce,workforce-board}.ts, api/ops/rail-health, lib/crm/unified-crm-service.ts
     {
       file: "pipeline-engine.html",
+      film: "pipeline",
       n: "03",
       name: "Pipeline Engine",
       tag: "Pipeline management and optimization",
@@ -337,6 +358,8 @@ module.exports = function remix(h) {
 <div class="btns">${heroBtn(offer(p.file, "withYou"), "Done with you", "btn primary")}${heroBtn(offer(p.file, "forYou"), "Done for you", "btn")}</div>
 </section>
 
+<section class="sec">${film(p.film)}</section>
+
 <section class="sec" id="spec">
 <h2>What it does</h2>
 <p class="sub">${lines} lines, read from the code that runs in Nextier today.</p>
@@ -394,9 +417,16 @@ ${p.faq.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></
     description: "A working execution system, set up in your own workspace: Data Engine, Campaign Engine, Pipeline Engine.",
     cta: "Book a call",
     body: `<section class="hero">
-<h1>Build Packs</h1>
-<p class="lede">A working execution system, set up in your own workspace.</p>
-<div class="flow" aria-label="Order">${PACKS.map((p) => `<span>${esc(p.name)}</span>`).join("<i>→</i>")}</div>
+<div class="kicker">Build Packs</div>
+<h1 class="open">Reimagine what it means to <span class="hl">get in front of your target audience</span>.</h1>
+<ul class="said"><li>Agnostic personalized infrastructure.</li><li>Remixable.</li><li>B2B, B2C or real estate professionals.</li></ul>
+</section>
+<section class="sec films">
+${["data", "campaign", "pipeline", "comms", "terminal"].map(film).join("\n")}
+</section>
+<section class="sec">
+<h2>Real deals</h2>
+<div class="grid g2 deals">${film("bronx")}${film("windsor")}</div>
 </section>
 <section class="sec">
 <div class="grid g3 packs">${PACKS.map((p) => `<a class="card pack" href="${p.file}"><div class="k">Pack ${p.n}</div><h3>${esc(p.name)}</h3>${p.tag ? `<p class="tag">${esc(p.tag)}</p>` : ""}<p>${esc(p.line)}</p><span class="more">See the spec →</span></a>`).join("")}</div>

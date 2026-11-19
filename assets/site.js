@@ -33,3 +33,9 @@
     if (pref) document.querySelectorAll(".tabs button").forEach(function (b) { if (b.textContent === pref) b.click(); });
   } catch (e) {}
 })();
+
+// Films: phones get the phone cut when there is one.
+(function () {
+  if (!window.matchMedia || !matchMedia("(max-width: 640px)").matches) return;
+  document.querySelectorAll("video[data-mobile]").forEach(function (v) { v.src = v.getAttribute("data-mobile"); });
+})();
