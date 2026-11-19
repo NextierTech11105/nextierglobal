@@ -267,3 +267,56 @@ ul.said li::before{content:'•';color:var(--orange);margin-right:.5em}
 .film .play .pi::after{content:'';position:absolute;left:34px;top:26px;border-style:solid;border-width:16px 0 16px 26px;border-color:transparent transparent transparent #fff}
 .film .play:hover .pi{filter:brightness(1.15)}
 @media (max-width:640px){.film .play{aspect-ratio:9/16;max-height:82svh}}
+
+/* ───────── BLACK (Thomas 11-19: "make it black") + the real Nextier logo ───────── */
+:root{--bg:#000;--bg-2:#050506;--panel:#0a0b0f;--panel-2:#111318;--line:#1c1f29;--line-2:#2a2e3c}
+html,body{background:#000}
+.doc-page{background:#000}
+.poster{background:radial-gradient(60% 34% at 0% 0%,rgba(38,118,255,.22),transparent 70%),radial-gradient(54% 30% at 100% 100%,rgba(255,112,30,.2),transparent 72%),#000}
+.top{background:rgba(0,0,0,.92);border-bottom-color:#16181f}
+.card{background:linear-gradient(160deg,rgba(47,139,255,.05),#07080b 42%);border-color:#23262f}
+.steps li{background:linear-gradient(160deg,rgba(255,122,26,.05),#07080b 42%);border-color:#23262f}
+pre{background:#050608;border-color:#1a1c24}
+code{background:#0b0c10;border-color:#1a1c24}
+.note{background:#0d0804}
+.note.b{background:#05070c}
+.chip,.flow span{background:#0a0b0f}
+.film .frame{border-color:#23262f;box-shadow:0 0 40px rgba(47,139,255,.12)}
+.film .play{background:radial-gradient(60% 70% at 50% 45%,#0c1630 0%,#04060c 55%,#000 100%)}
+.brand{gap:9px}
+.brand .lg-m{width:35px;height:auto}
+.brand .lg-w{width:103px;height:auto;margin-top:1px}
+.brand .lg-g{font-family:var(--display);font-weight:800;font-size:15px;letter-spacing:.18em;color:var(--soft)}
+.poster .mk{object-fit:contain}
+
+/* ───────── Harness ───────── */
+.hmap{display:flex;flex-direction:column;align-items:center;gap:0;max-width:980px;margin:8px auto 0}
+.hn{width:min(100%,560px);text-align:center;border:1px solid #2a2e3c;border-radius:16px;padding:14px 18px;background:#08090d}
+.hn b{display:block;font-family:var(--display);font-weight:800;font-size:17px;letter-spacing:.04em;text-transform:uppercase;color:#fff}
+.hn span{display:block;margin-top:4px;color:var(--soft);font-size:16px}
+.hn.wiz{border-color:#2f6fd8;box-shadow:0 0 26px rgba(47,139,255,.22)}
+.hn.core{border-color:var(--orange);box-shadow:0 0 26px rgba(255,122,26,.2)}
+.hn.dec{border:1px dashed #c9a452;background:#0d0b05}
+.hn.go{border-color:#1f7a55;background:#04100b}
+.hn.end{border-color:#3a3e4c}
+.ha{color:var(--muted);font-size:18px;line-height:1;padding:8px 0;text-align:center}
+.ha i{display:block;font-style:normal;font-weight:700;font-size:15px;color:var(--blue-soft);background:#020a14;border:1px solid #1a3e5f;border-radius:999px;padding:3px 12px;margin:0 auto 6px;width:max-content}
+.hrow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;width:min(100%,900px)}
+.hrow .hn{width:100%}
+.hlayers{width:min(100%,640px);border:1px solid #2a2e3c;border-radius:20px;padding:14px;background:#0c0d12;display:flex;flex-direction:column;align-items:center}
+.hlayers .hn{width:100%}
+.hl-t{font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:15px;color:var(--muted);margin-bottom:10px}
+.hbranch{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;width:100%;margin-top:4px}
+.hcol{display:flex;flex-direction:column;align-items:center}
+.hcol .hn{width:100%}
+.hback{margin-top:10px;font-weight:700;font-size:15px;color:var(--orange-soft);text-align:center}
+em.soon{font-style:normal;border:1px dashed var(--orange-soft);border-radius:6px;padding:0 5px;margin:0 2px;color:var(--orange-soft)}
+em.soon::after{content:' soon';font-size:15px}
+.core-card p{color:#fff;font-weight:700;font-size:18px}
+table.segmap td span{display:block;color:var(--muted);font-size:15px}
+table.segmap td b{color:#fff}
+table.segmap th:not(:first-child),table.segmap td.c{text-align:center;width:16%}
+table.segmap td.c{color:var(--orange);font-size:18px}
+@media (max-width:760px){
+  .hrow,.hbranch{grid-template-columns:minmax(0,1fr)}
+}

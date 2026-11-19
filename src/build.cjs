@@ -45,6 +45,7 @@ const POSTER = [
 // The bar on every other page (Exa's layout, 2026-11-19): the packs, the developer pages, the docs index, plans.
 const NAV = [
   ["build-packs.html", "Build Packs"],
+  ["harness.html", "Harness"],
   ["api.html", "API"],
   ["sdk.html", "SDK"],
   ["mcp.html", "MCP"],
@@ -128,8 +129,8 @@ function head({ file, title, description }) {
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#040a1f">
-<link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="assets/nextier-mark.png" type="image/png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;700&family=Montserrat:wght@600;700;800&display=swap">
@@ -143,7 +144,7 @@ function page({ file, title, description, body, cta = "Request a key" }) {
   return `${head({ file, title, description })}
 <body class="doc-page">
 <header class="top"><div class="in">
-  <a class="brand" href="./" aria-label="Nextier Global home">${mark("mk-s", "h")}<span>NEX<b>TIER</b> GLOBAL</span></a>
+  <a class="brand" href="./" aria-label="Nextier Global home"><img class="lg-m" src="assets/nextier-mark.png" alt="" width="35" height="32"><img class="lg-w" src="assets/nextier-word.png" alt="Nextier" width="103" height="19"><span class="lg-g">GLOBAL</span></a>
   <nav class="nav" aria-label="Main">${nav}${cta ? `<a class="cta" href="${BOOK}" target="_blank" rel="noopener">${esc(cta)}</a>` : ""}</nav>
 </div></header>
 <main>
@@ -174,7 +175,7 @@ const home = `${head({
 <main class="poster">
 ${STREAKS}
 <div class="poster-in">
-  ${mark("mk", "p")}
+  <img class="mk" src="assets/nextier-mark.png" alt="Nextier" width="177" height="160">
   <p class="wordmark">NEX<span class="t">TIER</span> GLOBAL</p>
   <p class="tagline"><span>INTELLIGENCE</span><span>JUDGMENT</span><span>EXECUTION</span></p>
   <div class="stage" aria-hidden="true">

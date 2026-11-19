@@ -428,6 +428,7 @@ ${["data", "campaign", "pipeline", "comms", "terminal"].map(film).join("\n")}
 <h2>Real deals</h2>
 <div class="grid g2 deals">${film("bronx")}${film("windsor")}</div>
 </section>
+<section class="sec"><a class="card nextpack" href="harness.html"><div class="k">How it fits together</div><h3>The Intentional Outreach Harness →</h3><p>The map, the Wizard, AI tasks vs role tasks, wizards and dashboards by segment.</p></a></section>
 <section class="sec">
 <div class="grid g3 packs">${PACKS.map((p) => `<a class="card pack" href="${p.file}"><div class="k">Pack ${p.n}</div><h3>${esc(p.name)}</h3>${p.tag ? `<p class="tag">${esc(p.tag)}</p>` : ""}<p>${esc(p.line)}</p><span class="more">See the spec →</span></a>`).join("")}</div>
 </section>
@@ -500,6 +501,7 @@ ${twoWays()}
     ["Get started", [["quickstart.html", "Quickstart", "Key → signals → labels → a staged block, in five calls."], ["skill.md", "Agent skill", "Drop-in instructions for Claude Code and other coding agents."], ["llms.txt", "llms.txt", "This index, for agents."]]],
     ["API", [["api.html", "API reference", `All ${EP.length} endpoints, with curl and SDK.`], ["best-practices.html", "Best practices", "Smallest useful request, reading responses, common mistakes."], ["openapi.json", "OpenAPI spec", "Every request and response schema."], ["api.html#errors", "Errors and limits", "Status codes and per-call caps."]]],
     ["SDK + MCP", [["sdk.html", "SDK", "Zero-dependency JavaScript client with TypeScript types."], ["mcp.html", "MCP", "Tools for AI assistants (Nextier operators today)."]]],
+    ["Architecture", [["harness.html", "Intentional Outreach Harness", "The map, the Wizard, the contracts, wizards and dashboards by segment."]]],
     ["Build Packs", PACKS.map((p) => [p.file, p.name, p.line])],
     ["Admin", [["plans.html", "Plans", "API, done with you, done for you."]]],
   ];
@@ -760,8 +762,11 @@ ${EP.map((e) => L(`api.html#${e.id}`, `${e.method} /api/data-engine/v1${e.path |
 ${L("sdk.html", "SDK", "Zero-dependency JavaScript client with TypeScript types. Node 18+, Deno, Bun, edge.")}
 ${L("mcp.html", "MCP", `${MCP_TOOLS.flatMap(([, l]) => l).length} tools for AI assistants. Nextier operators today; client access is the next build.`)}
 
+## Architecture
+${L("harness.html", "Intentional Outreach Harness", "Agnostic execution architecture: the Wizard configures, the harness executes, people decide. Wizards and dashboards by segment.")}
+
 ## Build Packs
-${L("build-packs.html", "Build Packs", "A working execution system, set up in your own workspace.")}
+${L("build-packs.html", "Build Packs", "Data Engine, Campaign Engine, Pipeline Engine: a working execution system, set up in your own workspace.")}
 ${PACKS.map((p) => L(p.file, p.name, `${p.line} ${p.about}`)).join("\n")}
 
 ## Admin
@@ -770,6 +775,174 @@ ${L("plans.html", "Plans", "API, done with you, done for you and managed. Every 
 ## OpenAPI Spec
 - [openapi](openapi.json)
 `;
+
+  // ───────────────────────────── The Harness (Thomas's architecture, 2026-11-19, his diagram + doc) ─────────────────────────────
+  // His words, minus the two pitch slogans (11-15 rule). Wizards + dashboards = pages that exist on main under app/t/[team]
+  // (onboarding, client-onboarding, agent-setup, block-builder, automations/setup, settings/sms, admin/campaign-director,
+  // mission-control, factory, calendar, analytics/pipeline-heatmap, execution-board, segmented-board, email-out, properties,
+  // signals-console, signals/net-new, signal-dashboards, signals-cadence-calendar, initial-sms-launch, blocks-board,
+  // vanessa-os (= the field app), call-center, call-center/power-dialer, call-ready, playbook, settings/call-center).
+  const node = (t, s, cls = "") => `<div class="hn${cls ? " " + cls : ""}"><b>${esc(t)}</b>${s ? `<span>${s}</span>` : ""}</div>`;
+  const down = (l = "") => `<div class="ha" aria-hidden="true">${l ? `<i>${esc(l)}</i>` : ""}↓</div>`;
+  const soon = (w) => `<em class="soon">${esc(w)}</em>`;
+  const WIZ_Q = [
+    ["WHO are we pursuing?", "ICP, target pool, territory, segmentation"],
+    ["WHY are we pursuing them?", "Intent, objective, value proposition"],
+    ["WHAT are we demonstrating?", "Competency, messaging POV, talking points"],
+    ["WHEN should pursuit occur?", "Event triggers, timing signals, priority"],
+    ["HOW do we engage?", "Channel adapters, initial openers, sequences"],
+    ["HOW OFTEN?", "Cadence, 21-day blitz, nurture, reactivation"],
+    ["HOW MUCH?", "Lead blocks, daily volume, execution capacity"],
+    ["WHO executes?", "Human roles, Digital Workforce, escalation"],
+    ["WHAT is the outcome?", "Discovery, qualification, origination contract"],
+  ];
+  const CONFIGS = [
+    ["Real Estate Agent", "Property owners · SMS + calls · Listing Discovery"],
+    ["Field Specialist", "Territory · Door knock + voice · Follow-through"],
+    ["B2B Consultant", "Business ICP · Email + calls · Consultation"],
+    ["Agency Director", "Multiple clients · Multiple channels · Governed teams"],
+  ];
+  const CONTRACTS = [
+    ["Data Contract", "Who qualifies, what signals matter, when data is refreshed, and what makes someone reachable."],
+    ["Pursuit Contract", "Channel, cadence, message, block size, authorization and volume mandate."],
+    ["Digital Workforce Contract", "What AI detects, prepares, classifies, recommends, and executes within approved boundaries."],
+    ["Human Execution Contract", "Who takes conversations, how competency is demonstrated, who decides advancement, and who follows through."],
+    ["Outcome Contract", "What counts as completion, where responsibility transfers, and how origination is measured."],
+  ];
+  const AI_TASKS = ["Detects", "Prepares", "Classifies", "Recommends", "Executes within approved boundaries"];
+  const ROLE_TASKS = [
+    ["Campaign Director", "Defines the mandate and governs execution"],
+    ["Campaign Manager", "Coordinates capacity and accountability"],
+    ["Advisor · Agent · Specialist", "Takes the conversation, demonstrates competency, follows through"],
+    ["A person", "Decides advancement. Every time"],
+  ];
+  const SEGS = ["B2B", "B2C", "Real Estate"];
+  // [name, does, segments it serves] ("all" = every segment). B2B is call-first: no Initial SMS launch.
+  const WIZARDS = [
+    ["Client onboarding", "One page, three steps", "all"],
+    ["Workspace onboarding", "Your workspace, your keys", "all"],
+    ["Block Builder", "Carves your book into blocks", "all"],
+    ["Automation setup", "If this, then that", "all"],
+    ["Campaign programming", "The Director's campaign setup", "all"],
+    ["Texting setup", "Brand, campaign, numbers", ["B2C", "Real Estate"]],
+    ["Agent setup", "A workspace for agents", ["Real Estate"]],
+    ["Call Center setup", "Lines and dialer settings", ["B2B", "Real Estate"]],
+  ];
+  const DASHBOARDS = [
+    ["Mission Control", "Every robot: before, during, after", "all"],
+    ["Inbound Factory", "Every reply, sorted", "all"],
+    ["Focus Calendar", "Booked calls and what you're working", "all"],
+    ["Pipeline heat map", "Where deals are moving", "all"],
+    ["Execution Board", "Today's work", "all"],
+    ["Segmented Board", "The book by surface, month, origin", "all"],
+    ["Email Out", "Email from your own address", "all"],
+    ["Call Center + power dialer", "Click to call, call straight through", ["B2B", "Real Estate"]],
+    ["Call Ready", "Who to call now", ["B2B", "Real Estate"]],
+    ["Playbook", "Who to target, the numbers game", ["B2B"]],
+    ["Initial SMS launch", "Capacity, blocks, one press", ["B2C", "Real Estate"]],
+    ["Blocks board", "Every block and what's left", ["B2C", "Real Estate"]],
+    ["Property Book", "List view, then detail", ["Real Estate"]],
+    ["Signals console + net-new", "What changed, and why now", ["Real Estate"]],
+    ["Signal dashboards", "Signal mix by family", ["Real Estate"]],
+    ["Field app", "One door at a time", ["Real Estate"]],
+  ];
+  const segTable = (rows) => `<div class="tbl"><table class="segmap"><thead><tr><th></th>${SEGS.map((s) => `<th>${esc(s)}</th>`).join("")}</tr></thead><tbody>${rows.map(([n, d, segs]) => `<tr><td><b>${esc(n)}</b><span>${esc(d)}</span></td>${SEGS.map((s) => `<td class="c">${segs === "all" || segs.includes(s) ? "●" : ""}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+
+  const harness = page({
+    file: "harness.html",
+    title: "Intentional Outreach Harness · Nextier Global",
+    description: "Agnostic execution architecture, wizard-configured and human-governed. The Wizard changes the configuration, not the engine.",
+    cta: "Book a call",
+    body: `<section class="hero">
+<div class="kicker">Agnostic execution architecture · Wizard-configured · Human-governed</div>
+<h1>Intentional Outreach Harness</h1>
+<p class="about">The Wizard determines the pursuit strategy, environment, roles, communication channels, capacity, cadence and desired outcome. The harness assembles the workflows without changing its foundational architecture.</p>
+<div class="flow"><span>Wizard</span><i>→</i><span>Configuration</span><i>→</i><span>Execution</span><i>→</i><span>Origination</span></div>
+</section>
+
+<section class="sec" id="map">
+<h2>The map</h2>
+<div class="hmap">
+  ${node("🧭 Execution Wizard", "Who · What · Why · Where · When · How · How often · Volume · Roles · Outcome", "wiz")}
+  ${down()}
+  ${node("Configuration Compiler", "Execution Blueprint + Contracts")}
+  ${down()}
+  <div class="hrow">${node("Intentional Outreach Harness", "Universal Execution Core", "core")}${node("Governance", "RBAC · Compliance · Capacity · Audit", "gov")}</div>
+  ${down()}
+  <div class="hlayers"><div class="hl-t">Modular execution layers</div>
+    ${node("Data Engine", "Target · Refine · Score · Monitor")}${down()}
+    ${node("Pursuit Engine", "Blocks · Cadence · Attempts · Triggers")}${down()}
+    ${node("Omnichannel Adapters", `SMS · Voice · Email · Field · ${soon("Social")} ${soon("Mail")} · Other`)}${down()}
+    ${node("Inbound Refinery", "Detect · Classify · Prioritize · Route")}
+  </div>
+  ${down()}
+  ${node("Digital Workforce", "Context · Recommendations · Handoffs")}
+  ${down()}
+  ${node("Human Execution", "Advisor · Agent · Specialist")}
+  ${down()}
+  ${node("Human Decision", "", "dec")}
+  <div class="hbranch">
+    <div class="hcol">${down("Advance")}${node("Discovery", "Booked → Completed", "go")}${down()}${node("Qualified Deal Origination", "Ownership · Next Step · Visibility", "go")}${down()}${node("Performance Intelligence", "Conversion · Coverage · Leakage")}<div class="hback">↺ Director Optimization → Configuration Compiler</div></div>
+    <div class="hcol">${down("Continue")}${node("Follow-up / Nurture", "")}<div class="hback">↺ back to the Pursuit Engine</div></div>
+    <div class="hcol">${down("Decline / Suppress")}${node("Closed / Suppressed", "", "end")}</div>
+  </div>
+</div>
+<p class="note">Human approval governs advancement. STOP/DNC, consent, quiet hours and capacity rules can block or end execution at every stage.</p>
+</section>
+
+<section class="sec" id="wizard">
+<h2>The Wizard questions set the shape</h2>
+<div class="tbl"><table><thead><tr><th>Wizard question</th><th>What the harness configures</th></tr></thead><tbody>${WIZ_Q.map(([q, a]) => `<tr><td><b>${esc(q)}</b></td><td>${esc(a)}</td></tr>`).join("")}</tbody></table></div>
+</section>
+
+<section class="sec" id="constant">
+<h2>The harness stays. The configuration changes.</h2>
+<div class="card core-card"><div class="k">Universal harness</div><p>Same workflow orchestration · Governance · Attempt ledger · Measurement</p></div>
+<div class="grid g2 cfgs" style="margin-top:14px">${CONFIGS.map(([t, d]) => `<div class="card"><h3>${esc(t)}</h3><p>${esc(d)}</p></div>`).join("")}</div>
+<p class="sub" style="margin-top:14px">Configurations are examples. The same harness serves any industry, team or service model, with no vertical logic hardcoded.</p>
+</section>
+
+<section class="sec" id="tasks">
+<h2>AI tasks vs role tasks</h2>
+<div class="grid g2">
+  <div class="card"><div class="k">The Digital Workforce</div><ul class="checks">${AI_TASKS.map((t) => `<li>${esc(t)}</li>`).join("")}</ul></div>
+  <div class="card"><div class="k">The roles</div><ul class="checks">${ROLE_TASKS.map(([r, d]) => `<li><b>${esc(r)}.</b> ${esc(d)}</li>`).join("")}</ul></div>
+</div>
+</section>
+
+<section class="sec" id="workflows">
+<h2>Foundational workflows</h2>
+<div class="grid g2">
+  <div class="card"><div class="k">Foundational</div><h3>Source → Enrich → Blocks → Initial SMS sent and delivered</h3><p>Ends when the first text is confirmed delivered.</p></div>
+  <div class="card"><div class="k">Layered</div><h3>Replies → Classify → Prioritize → Adaptive execution</h3><p>Everything after the reply, built on the foundation.</p></div>
+</div>
+</section>
+
+<section class="sec" id="contracts">
+<h2>Five execution contracts</h2>
+<p class="sub">The Wizard's answers fill five coordinated contracts.</p>
+<div class="grid g2">${CONTRACTS.map(([t, d], i) => `<div class="card"><div class="k">0${i + 1}</div><h3>${esc(t)}</h3><p>${esc(d)}</p></div>`).join("")}</div>
+</section>
+
+<section class="sec" id="wizards">
+<h2>Wizards, by segment</h2>
+<p class="sub">Live in Nextier today.</p>
+${segTable(WIZARDS)}
+</section>
+
+<section class="sec" id="dashboards">
+<h2>Dashboards, by segment</h2>
+<p class="sub">Live in Nextier today. B2B is call-first, so it has no bulk first-text launch.</p>
+${segTable(DASHBOARDS)}
+</section>
+
+<section class="sec last" id="governance">
+<h2>Governance at the center</h2>
+<p class="sub">The default campaign boundary is a 15-minute Discovery, booked and confirmed completed by a person. Qualified opportunities then move to an accountable deal owner.</p>
+<div class="note b"><b>Architectural rule.</b> The Wizard changes the configuration, not the engine. Every workflow stays reusable, remixable, measurable, reversible where appropriate, and governed by explicit human and AI responsibilities.</div>
+<div class="btns"><a class="btn primary" href="build-packs.html">See the Build Packs</a>${book("Book a call", "btn")}</div>
+</section>`,
+  });
 
   // ───────────────────────────── after payment: Stripe sends the buyer here ─────────────────────────────
   const kickoff = page({
@@ -796,6 +969,7 @@ ${L("plans.html", "Plans", "API, done with you, done for you and managed. Every 
   });
 
   const files = {
+    "harness.html": harness,
     "kickoff.html": kickoff,
     "build-packs.html": catalog,
     "plans.html": plans,

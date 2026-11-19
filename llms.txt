@@ -33,8 +33,11 @@
 - [SDK](sdk.html): Zero-dependency JavaScript client with TypeScript types. Node 18+, Deno, Bun, edge.
 - [MCP](mcp.html): 11 tools for AI assistants. Nextier operators today; client access is the next build.
 
+## Architecture
+- [Intentional Outreach Harness](harness.html): Agnostic execution architecture: the Wizard configures, the harness executes, people decide. Wizards and dashboards by segment.
+
 ## Build Packs
-- [Build Packs](build-packs.html): A working execution system, set up in your own workspace.
+- [Build Packs](build-packs.html): Data Engine, Campaign Engine, Pipeline Engine: a working execution system, set up in your own workspace.
 - [Data Engine](data-engine.html): From a territory to an owner you can call. Every parcel in your territory, the signal that says why now, the owner behind it, and their phones and emails, ranked. It ends at click to call.
 - [Campaign Engine](campaign-engine.html): Initial SMS sent and delivered. Then the replies. One approved first text to a whole block, sent across your own lines through every carrier and compliance check. Replies come back on the same number, get answered, and become booked calls.
 - [Pipeline Engine](pipeline-engine.html): Every reply worked, in order. One record of truth. Every outcome goes through one router, every attempt sits in one ledger, and the people who raised a hand are on top. The machine does the clerical work and stops where judgment starts.
