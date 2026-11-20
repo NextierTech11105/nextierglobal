@@ -68,7 +68,7 @@ module.exports = function remix(h) {
     const b = offer(file, "forYou");
     return `<section class="sec" id="own">
 <h2>Two ways to own it</h2>
-<p class="sub">Same system either way. It runs on your accounts, and you keep them.</p>
+<p class="sub">Your accounts. You keep them.</p>
 <div class="grid g2">
   <div class="card plan"><div class="k">Done with you</div><h3>You set it up. We guide every step.</h3>${priceTag(a)}<ul class="checks">${WITH_YOU.map((l) => `<li>${esc(l)}</li>`).join("")}</ul><div class="btns">${buyBtn(a)}</div></div>
   <div class="card plan hot"><div class="k">Done for you, then managed</div><h3>We build it. Then we run it.</h3>${priceTag(b)}<ul class="checks">${[...FOR_YOU.slice(0, 3), ...extraForYou, FOR_YOU[3]].map((l) => `<li>${esc(l)}</li>`).join("")}</ul><div class="btns">${buyBtn(b)}</div></div>
@@ -430,8 +430,7 @@ ${p.faq.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></
     cta: "Book a call",
     body: `<section class="hero">
 <div class="kicker">Build Packs</div>
-<h1 class="open">Reimagine what it means to <span class="hl">get in front of your target audience</span>.</h1>
-<ul class="said"><li>Agnostic personalized infrastructure.</li><li>Remixable.</li><li>B2B, B2C or real estate professionals.</li></ul>
+<h1 class="open">We transform <span class="hl">data into leads</span>.</h1>
 </section>
 <section class="sec films">
 ${/* 11-19 Thomas: "but first its dataengine" · "nextier communication os, just put that video" · "and then nxtstory nxtpost".
@@ -447,7 +446,7 @@ ${/* 11-19 Thomas: "but first its dataengine" · "nextier communication os, just
 </section>
 <section class="sec">
 <h2>Works for</h2>
-<p class="sub">The same layers in every vertical. Only the sources inside them change.</p>
+<p class="sub">Same system. Your data.</p>
 <div class="flow"><span>Real Estate</span><span>B2B</span><span class="soon">B2C · soon</span></div>
 </section>
 <section class="sec">
