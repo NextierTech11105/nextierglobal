@@ -239,6 +239,12 @@ a.card h3{color:#fff}
 /* films + the opening (2026-11-19) */
 h1.open{font-size:clamp(34px,5.4vw,64px);line-height:1.04;max-width:18ch}
 h1.open .hl{background:linear-gradient(90deg,#5fcbff,#8f74ff 50%,#ff8a22);-webkit-background-clip:text;background-clip:text;color:transparent}
+h1.open.master{max-width:none;font-size:clamp(30px,4vw,56px);line-height:1.1;letter-spacing:-.01em}
+h1.open.master .l{display:block}
+p.claim{font-size:clamp(18px,1.9vw,22px);font-weight:500;line-height:1.5;color:var(--soft);max-width:46ch;margin:22px 0 0;text-wrap:balance}
+.flow a{color:inherit;text-decoration:none}
+.flow span:has(a){transition:border-color .15s}
+.flow span:has(a):hover{border-color:var(--blue-soft)}
 ul.said{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:6px}
 ul.said li{font-family:var(--display);font-weight:700;font-size:clamp(19px,2.2vw,24px);color:#fff}
 ul.said li::before{content:'•';color:var(--orange);margin-right:.5em}

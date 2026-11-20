@@ -533,7 +533,7 @@ ${ld([
   ];
   const AUDIENCES = LANDINGS.filter((l) => l.who);
   const STEPS = LANDINGS.filter((l) => l.step);
-  const pill = (l, on) => `<span${on ? ' class="soon"' : ""}><a href="${l.file}">${esc(l.who ? l.whoLong || l.who : l.step)}</a></span>`;
+  const pill = (l, on) => `<span${on ? ' class="soon"' : ""}><a href="${l.file}">${esc(l.who || l.step)}</a></span>`;
 
   const landingPage = (l) => {
     const name = l.who ? `For ${l.whoLong || l.who}` : `${l.step} · Inbound Factory`;
@@ -591,8 +591,8 @@ ${ld([
     cta: "Book a call",
     body: `<section class="hero">
 <div class="kicker">Build Packs</div>
-<h1 class="open">Transform data into <span class="hl">conversations</span>, then conversations into <span class="hl">deals</span>.</h1>
-<ul class="said"><li>Built for serious operators who understand the process of deal origination and are ready to multiply capacity around what already works.</li></ul>
+<h1 class="open master"><span class="l">Transform data into <span class="hl">conversations</span>,</span> <span class="l">then conversations into <span class="hl">deals</span>.</span></h1>
+<p class="claim">Built for serious operators who understand the process of deal origination and are ready to multiply capacity around what already works.</p>
 </section>
 <section class="sec">
 <h2>Who it's for</h2>
