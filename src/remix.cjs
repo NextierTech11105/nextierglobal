@@ -75,8 +75,8 @@ module.exports = function remix(h) {
 <h2>Two ways to own it</h2>
 <p class="sub">Your accounts. You keep them.</p>
 <div class="grid g2">
-  <div class="card plan"><div class="k">Done with you</div><h3>You set it up. We guide every step.</h3>${priceTag(a)}<ul class="checks">${WITH_YOU.map((l) => `<li>${esc(l)}</li>`).join("")}</ul><div class="btns">${buyBtn(a)}</div></div>
-  <div class="card plan hot"><div class="k">Done for you, then managed</div><h3>We build it. Then we run it.</h3>${priceTag(b)}<ul class="checks">${[...FOR_YOU.slice(0, 3), ...extraForYou, FOR_YOU[3]].map((l) => `<li>${esc(l)}</li>`).join("")}</ul><div class="btns">${buyBtn(b)}</div></div>
+  <div class="card plan"><div class="k">Own the Build</div><h3>You set it up. We guide every step.</h3>${priceTag(a)}<ul class="checks">${WITH_YOU.map((l) => `<li>${esc(l)}</li>`).join("")}</ul><div class="btns">${buyBtn(a)}</div></div>
+  <div class="card plan hot"><div class="k">Execution as a Service</div><h3>We build it. Then we run it.</h3>${priceTag(b)}<ul class="checks">${[...FOR_YOU.slice(0, 3), ...extraForYou, FOR_YOU[3]].map((l) => `<li>${esc(l)}</li>`).join("")}</ul><div class="btns">${buyBtn(b)}</div></div>
 </div>
 <h3 style="margin-top:30px">What you own</h3>
 <div class="own">${OWN.map(([k, v]) => `<div class="card"><div class="k">${esc(k)}</div><p>${esc(v)}</p></div>`).join("")}</div>
@@ -373,7 +373,7 @@ module.exports = function remix(h) {
 <h1>${esc(p.name)}</h1>
 <p class="lede">${esc(p.line)}</p>
 <p class="about">${esc(p.about)}</p>
-<div class="btns">${heroBtn(offer(p.file, "withYou"), "Done with you", "btn primary")}${heroBtn(offer(p.file, "forYou"), "Done for you", "btn")}</div>
+<div class="btns">${heroBtn(offer(p.file, "withYou"), "Own the Build", "btn primary")}${heroBtn(offer(p.file, "forYou"), "Execution as a Service", "btn")}</div>
 </section>
 
 <section class="sec">${film(p.film)}${p.more ? (p.more.length === 1 ? `<div style="margin-top:28px">${film(p.more[0])}</div>` : `<div class="grid g2 deals" style="margin-top:28px">${p.more.map(film).join("")}</div>`) : ""}</section>
@@ -689,47 +689,147 @@ ${twoWays()}
 <section class="sec last"><div class="btns">${book("Book a call")}<a class="btn" href="plans.html">See the plans</a></div></section>`,
   });
 
-  // ───────────────────────────── Plans (Exa's pricing page, without the numbers) ─────────────────────────────
+  // ───────────────────────────── Plans: three offers, the governance map, Build Packs, then the API limits ─────────────────────────────
+  // 2026-11-20 remix (Thomas's pastes): Plug In & Execute · Own the Build · Execution as a Service, one call to action
+  // on all three (a 15-minute Discovery), the governance map directly under the offers, the packs on their own links,
+  // and the developer limits below the commercial part. A copy change only: the endpoints, the metering and whose
+  // accounts they are did not move. ⛔ Still no price, no vendor names, and no slogan headline (his 11-15 rule).
   const LIMITS = [
-    ["GET /leads", "200 leads per page"],
-    ["GET /signals/net-new", "5,000 signals per call"],
-    ["POST /leads/autotag", "50,000 leads per run without leadIds (default 5,000)"],
-    ["POST /push/dialer", "500 rows per call"],
-    ["Every call", "Metered on your key"],
+    ["GET /leads", "200 leads per page", true],
+    ["GET /signals/net-new", "5,000 signals per call", true],
+    ["POST /leads/autotag", "50,000 leads per run without leadIds (default 5,000)", true],
+    ["POST /push/dialer", "500 rows per call", true],
+    ["Authentication", "Workspace API key"],
+    ["Usage", "Metered per API call"],
+  ];
+  const DISCOVERY = "Book a 15-Minute Discovery";
+  const THREE_OFFERS = [
+    {
+      n: "01", name: "Plug In & Execute", k: "Self-directed API access", say: "Your systems. Our execution infrastructure.",
+      list: [`${EP.length} API endpoints, the SDK and the OpenAPI spec`, "Leads, event signals and the field registry", "Labels, tags and supported workflow stages", "One API key, one workspace, metered usage"],
+      best: "Developers, technical operators and teams building their own workflows.",
+    },
+    {
+      n: "02", name: "Own the Build", k: "Guided Build Pack installation", say: "We build with you. You own what runs.",
+      list: ["Accounts, credentials and infrastructure in your name", "Your selected Build Packs installed and configured", "Your execution blueprint, workflow maps and playbooks", "Hands-on guidance, testing and operator training", "API access included"],
+      best: "Agencies and businesses with an operator ready to own daily execution.",
+    },
+    {
+      n: "03", name: "Execution as a Service", k: "Done-for-you installation + managed execution", say: "You own the infrastructure. We operate the execution.", hot: true,
+      list: ["Full installation and workflow activation", "Campaign Director governance and execution coordination", "Digital Workforce handling repetitive operational tasks", "Human-led conversations and consequential decisions", "Weekly performance reviews and monthly optimization", "API access included"],
+      best: "Teams that want a working execution operation without managing every moving part.",
+    },
+  ];
+  // The governance map: who executes what, and who stays accountable. b = Digital Workforce, v = Humanized, g = Human.
+  const GOV_LAYERS = [
+    {
+      c: "b", name: "Digital Workforce", mode: "Automated", is: "Machine-run, repeatable, structured work.",
+      owns: ["Source", "Normalize", "Enrich", "Score", "Monitor", "Classify", "Prioritize", "Queue", "Recommend", "Trigger authorized actions"],
+      out: "Priority queues + recommended actions", cannot: "Cannot make consequential advancement decisions.",
+    },
+    {
+      c: "v", name: "Humanized Execution", mode: "Human + AI", is: "Human-in-the-loop execution with AI support.",
+      owns: ["Campaign Director oversight", "Campaign Manager coordination", "Inbox handling", "Bulk review", "Reply handling", "Suggested next actions", "Workflow adjustments", "Daily execution management"],
+      out: "Conversations + consequential decisions", cannot: "Should not waste time doing machine work.",
+    },
+    {
+      c: "g", name: "Human Execution", mode: "Human-owned", is: "Judgment, conversations, decisions, accountability.",
+      owns: ["Live calls", "Real text conversations", "Real email conversations", "Opportunity judgment", "Appointment confirmation", "Discovery confirmation", "Client-facing accountability", "Strategic direction"],
+      out: "A booked and completed Discovery", cannot: "Cannot offload accountability.",
+    },
+  ];
+  const HUMAN_ONLY = ["Advance to OPPT", "Advance to APPT BOOKED", "Confirm APPT COMPLETED", "Mark true WON / LOST", "Decide pause / suppress / recirculate after real context"];
+  const OUTCOMES = ["Booked Discovery", "Completed Discovery", "Qualified Opportunity", "Won / Lost / Recycle"];
+  const CYCLE = [
+    ["b", "Digital Workforce", "Source data"],
+    ["b", "Digital Workforce", "Normalize + enrich"],
+    ["b", "Digital Workforce", "Score + prioritize"],
+    ["b", "Digital Workforce", "Prep campaign blocks"],
+    ["v", "Humanized Execution", "Review + activate execution"],
+    ["vg", "Humanized and Human Execution", "Outbound + inbound handling"],
+    ["g", "Human Execution", "Live conversation + judgment"],
+    ["g", "Human Execution", "Advance / pause / suppress / book"],
+    ["g", "Human Execution", "Discovery completed"],
+    ["b", "Digital Workforce", "Log outcome + feed system"],
+    ["o", "The loop", "Next cycle gets smarter"],
+  ];
+  const CADENCE = [
+    ["b", "Digital Workforce", "Continuous execution", "Reporting + analysis", "Scans + automated refresh"],
+    ["v", "Humanized", "Queue clearing + coordination", "Director reviews + adjustments", "Rebalance + workflow optimization"],
+    ["g", "Human", "Conversations + decisions", "Discovery outcomes", "Strategic business decisions"],
+  ];
+  const GOVERN = [
+    ["b", "Digital Workforce", "Automation + AI", "Prepare, classify, prioritize, monitor, recommend", "Reduce manual burden and maintain flow", "Cannot make consequential advancement decisions"],
+    ["v", "Humanized Execution", "Human-in-loop operations", "Review, coordinate, manage queues, optimize execution", "Turn machine output into intentional daily execution", "Should not waste time doing machine work"],
+    ["g", "Human Execution", "Human judgment", "Converse, decide, confirm, own outcomes", "Convert conversations into real advancement", "Cannot offload accountability"],
+  ];
+  const dot = (c) => `<b class="dot ${c}"></b>`;
+  // Build Pack rows: our own drawn tiles (no stock pictures), the pack's own page, its chain, one line.
+  const BP_TILE = {
+    "data-engine.html": `<svg viewBox="0 0 120 120" aria-hidden="true"><defs><radialGradient id="bpd" cx="50%" cy="50%" r="60%"><stop offset="0" stop-color="#1a5fd0" stop-opacity=".6"/><stop offset="1" stop-color="#040a1f" stop-opacity="0"/></radialGradient></defs><rect width="120" height="120" rx="22" fill="#050b1c"/><rect width="120" height="120" rx="22" fill="url(#bpd)"/><path d="M60 60 26 28M60 60 94 28M60 60 26 92M60 60 94 92M60 60H14M60 60h46" stroke="#2f8bff" stroke-width="1.5" fill="none" opacity=".85"/><g fill="#0a1a3d" stroke="#9cc7ff" stroke-width="1.5"><rect x="18" y="20" width="16" height="16" rx="4"/><rect x="86" y="20" width="16" height="16" rx="4"/><rect x="18" y="84" width="16" height="16" rx="4"/><rect x="86" y="84" width="16" height="16" rx="4"/><circle cx="14" cy="60" r="4"/><circle cx="106" cy="60" r="4"/></g><g stroke="#fff" stroke-width="1.8"><path d="M42 48v24c0 5 8 8 18 8s18-3 18-8V48" fill="#0d2a66"/><ellipse cx="60" cy="48" rx="18" ry="7" fill="#1f5fd6"/><path d="M42 60c0 5 8 8 18 8s18-3 18-8" fill="none"/></g></svg>`,
+    "campaign-engine.html": `<svg viewBox="0 0 120 120" aria-hidden="true"><defs><radialGradient id="bpc" cx="45%" cy="55%" r="65%"><stop offset="0" stop-color="#6a4cff" stop-opacity=".55"/><stop offset="1" stop-color="#040a1f" stop-opacity="0"/></radialGradient></defs><rect width="120" height="120" rx="22" fill="#070818"/><rect width="120" height="120" rx="22" fill="url(#bpc)"/><path d="M20 24 52 50 96 22M52 50l48 20-16 30M52 50 22 92l62 8" stroke="#8f74ff" stroke-width="1.3" fill="none" opacity=".8"/><g fill="#ff7a1a"><circle cx="20" cy="24" r="3.5"/><circle cx="96" cy="22" r="3.5"/><circle cx="100" cy="70" r="3.5"/><circle cx="22" cy="92" r="3.5"/><circle cx="84" cy="100" r="3.5"/></g><path d="M34 40h40a8 8 0 0 1 8 8v18a8 8 0 0 1-8 8H52l-10 9v-9h-8a8 8 0 0 1-8-8V48a8 8 0 0 1 8-8z" fill="#141a44" stroke="#fff" stroke-width="1.8"/><g fill="#9cc7ff"><circle cx="44" cy="57" r="3"/><circle cx="54" cy="57" r="3"/><circle cx="64" cy="57" r="3"/></g></svg>`,
+    "inbound-factory.html": `<svg viewBox="0 0 120 120" aria-hidden="true"><defs><radialGradient id="bpi" cx="50%" cy="50%" r="60%"><stop offset="0" stop-color="#16b890" stop-opacity=".45"/><stop offset="1" stop-color="#040a1f" stop-opacity="0"/></radialGradient></defs><rect width="120" height="120" rx="22" fill="#050d14"/><rect width="120" height="120" rx="22" fill="url(#bpi)"/><g fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16C40 16 30 56 54 58" stroke="#2fd39a"/><path d="M6 38c28 0 26 20 48 21" stroke="#8f74ff"/><path d="M6 60h48" stroke="#2fd39a"/><path d="M6 82c28 0 26-20 48-21" stroke="#8f74ff"/><path d="M6 104c34 0 24-40 48-42" stroke="#2fd39a"/><path d="M78 60h30M100 52l8 8-8 8" stroke="#fff"/></g><rect x="52" y="48" width="24" height="24" rx="6" fill="#0b2a26" stroke="#fff" stroke-width="1.8"/><circle cx="64" cy="60" r="4" fill="#2fd39a"/></svg>`,
+  };
+  const BP_ROWS = [
+    ["data-engine.html", "Data Engine", ["Source", "Normalize", "Enrich", "Score", "Monitor"], "Turn fragmented records into prioritized, campaign-ready prospect blocks with reachability intelligence."],
+    ["campaign-engine.html", "Campaign Engine", ["Launch", "Deliver", "Engage", "Follow Up", "Book"], "Transform prepared contact blocks into intentional SMS, calling, and email execution."],
+    ["inbound-factory.html", "Inbound Factory", ["Detect", "Read", "Classify", "Prioritize", "Route"], "Connect inbound conversations to the correct contact, context, human operator, and next action."],
   ];
   const plans = page({
     file: "plans.html",
     title: "Plans · Nextier Global",
-    description: "Three ways in: an API key, a Build Pack done with you, or done for you and managed. Every plan runs on your own accounts.",
+    description: "One API on your own accounts, three ways to buy: Plug In & Execute, Own the Build, or Execution as a Service. Who executes what, the Build Packs and the API limits.",
     body: `<section class="hero">
-<h1>Plans</h1>
-<p class="lede">Three ways in. Every one runs on your own accounts.</p>
+<div class="kicker">Nextier execution infrastructure</div>
+<h1>One API. Your infrastructure. Your Digital Workforce.</h1>
+<p class="lede">Build it yourself, build it with us, or have Nextier execute it for you.</p>
 </section>
 <section class="sec">
 <div class="grid g3 plans">
-  <div class="card plan"><div class="k">API</div><h3>For your own systems</h3><ul class="checks">
-    <li>One key, one workspace</li><li>Read signals, leads and the field registry</li><li>Label, tag and stage work</li><li>${EP.length} endpoints, the SDK and the OpenAPI spec</li><li>Metered per call on your key</li>
-  </ul><div class="btns">${book("Request a key")}</div></div>
-  <div class="card plan"><div class="k">Done with you</div><h3>A Build Pack, set up with us</h3><ul class="checks">${WITH_YOU.map((l) => `<li>${esc(l)}</li>`).join("")}<li>API key included</li></ul><div class="btns">${book("Book a call")}</div></div>
-  <div class="card plan hot"><div class="k">Done for you, then managed</div><h3>We build it, then run it</h3><ul class="checks">${FOR_YOU.map((l) => `<li>${esc(l)}</li>`).join("")}<li>API key included</li></ul><div class="btns">${book("Book a call")}</div></div>
+${THREE_OFFERS.map((o) => `  <div class="card plan${o.hot ? " hot" : ""}"><div class="k"><span class="num">${o.n}</span>${esc(o.k)}</div><h3>${esc(o.name)}</h3><p class="say">${esc(o.say)}</p><ul class="checks">${o.list.map((l) => `<li>${esc(l)}</li>`).join("")}</ul><p class="for"><b>Ideal for</b>${esc(o.best)}</p><div class="btns">${book(DISCOVERY)}</div></div>`).join("\n")}
+</div>
+</section>
+<section class="sec" id="governance">
+<h2>Execution Governance Map</h2>
+<p class="sub">Three execution layers. One circulatory Communication OS.</p>
+<div class="grid g3">
+${GOV_LAYERS.map((l) => `  <div class="card lay ${l.c}"><div class="k">${dot(l.c)}${esc(l.mode)}</div><h3>${esc(l.name)}</h3><p class="is">${esc(l.is)}</p><ul class="chips">${l.owns.map((o) => `<li>${esc(o)}</li>`).join("")}</ul><p class="out"><b>Hands off</b>${esc(l.out)}</p><p class="cant"><b>Boundary</b>${esc(l.cannot)}</p></div>`).join("\n")}
+</div>
+<div class="flow loop"><span>${dot("b")}Digital Workforce</span><i>→</i><span>${dot("v")}Humanized Execution</span><i>→</i><span>${dot("g")}Human Execution</span><i>→</i><span>Outcomes</span><i>↺</i></div>
+<div class="grid g2">
+  <div class="card outcome"><div class="k">15-Minute Discovery</div><div class="big">Booked + Completed</div><p>Human-confirmed outcome · Logged to execution ledger</p><ul class="chips">${OUTCOMES.map((o) => `<li>${esc(o)}</li>`).join("")}</ul><p>Outcome feeds monitoring, prioritization and the next cycle.</p></div>
+  <div class="card lay g"><div class="k">${dot("g")}Human-only decisions</div><ul class="checks only">${HUMAN_ONLY.map((o) => `<li>${esc(o)}</li>`).join("")}</ul><p class="out"><b>Why</b>Execution can be assisted. Trust, judgment and accountability stay human.</p></div>
+</div>
+<p class="note b"><b>Governance boundary.</b> AI can classify, prioritize, recommend, prepare, and execute authorized routines. Only humans make consequential lead-advancement decisions. Every action must be attributable, logged, and subject to permissions, quiet hours, STOP/DNC controls, and exception handling.</p>
+<div class="faq">
+<details><summary>The cycle, step by step</summary>
+<div class="legend"><span>${dot("b")}Digital Workforce</span><span>${dot("v")}Humanized Execution</span><span>${dot("g")}Human Execution</span></div>
+<ol class="cycle">${CYCLE.map(([c, who, step]) => `<li class="${c}"><span class="sr">${esc(who)}: </span>${esc(step)}</li>`).join("")}</ol>
+</details>
+<details><summary>Operating cadence</summary>
+<div class="tbl"><table><thead><tr><th>Layer</th><th>Daily</th><th>Weekly</th><th>Monthly / Quarterly</th></tr></thead><tbody>${CADENCE.map(([c, n, ...r]) => `<tr><td><b class="w">${dot(c)}${esc(n)}</b></td>${r.map((x) => `<td>${esc(x)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>
+</details>
+<details><summary>Who owns what</summary>
+<div class="tbl"><table><thead><tr><th>Layer</th><th>Role</th><th>Owns</th><th>Main objective</th><th>Cannot do</th></tr></thead><tbody>${GOVERN.map(([c, n, ...r]) => `<tr><td><b class="w">${dot(c)}${esc(n)}</b></td>${r.map((x) => `<td>${esc(x)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>
+</details>
 </div>
 </section>
 <section class="sec">
-<h2>Build Packs</h2>
-<div class="tbl"><table><thead><tr><th>Pack</th><th>Does</th><th>Ends at</th></tr></thead><tbody>
-<tr><td><a href="data-engine.html"><b>Data Engine</b></a></td><td>Territory, signals, owners, phones and emails</td><td>Click to call</td></tr>
-<tr><td><a href="campaign-engine.html"><b>Campaign Engine</b></a></td><td>Initial SMS, replies, email, booking</td><td>A booked call</td></tr>
-<tr><td><a href="inbound-factory.html"><b>Inbound Factory</b></a></td><td>Outcomes, callbacks, robots, CRM</td><td>A person's next call</td></tr>
-</tbody></table></div>
+<h2>Build Pack Marketplace</h2>
+<p class="sub">Choose capabilities.</p>
+<div class="bp">
+${BP_ROWS.map(([file, name, chain, line]) => `  <a href="${file}">${BP_TILE[file]}<span><span class="n">${esc(name)}</span><span class="chain">${chain.map(esc).join(" → ")}</span><span class="d">${esc(line)}</span></span></a>`).join("\n")}
+</div>
 </section>
 <section class="sec">
-<h2>API limits</h2>
-<div class="tbl"><table><thead><tr><th>Endpoint</th><th>Per call</th></tr></thead><tbody>${LIMITS.map(([e, l]) => `<tr><td><code>${esc(e)}</code></td><td>${esc(l)}</td></tr>`).join("")}</tbody></table></div>
+<h2>Developer access and API limits</h2>
+<div class="tbl"><table><thead><tr><th>API capability</th><th>Current limit</th></tr></thead><tbody>${LIMITS.map(([e, l, isCode]) => `<tr><td>${isCode ? `<code>${esc(e)}</code>` : esc(e)}</td><td>${esc(l)}</td></tr>`).join("")}</tbody></table></div>
+<p class="devlinks"><a href="api.html">API reference</a><a href="quickstart.html">Quickstart</a><a href="sdk.html">SDK</a><a href="openapi.json">OpenAPI spec</a></p>
 </section>
 <section class="sec last">
-<h2>Your accounts</h2>
-<p class="sub">Texting and voice lines, skip trace, property data, email and your CRM are opened in your name. You pay each provider directly.</p>
-<div class="btns">${book("Book a call")}</div>
+<h2>Your infrastructure. Your accounts. Your data.</h2>
+<p class="sub">Texting, voice, enrichment, property data, email and CRM accounts stay in your name. You pay each provider directly. API usage and managed execution are billed apart from those provider costs.</p>
+<div class="btns">${book(DISCOVERY)}</div>
 </section>`,
   });
 
@@ -747,7 +847,7 @@ ${twoWays()}
     ["SDK + MCP", [["sdk.html", "SDK", "Zero-dependency JavaScript client with TypeScript types."], ["mcp.html", "MCP", "Tools for AI assistants (Nextier operators today)."]]],
     ["Architecture", [["harness.html", "Intentional Outreach Harness", "The map, the Wizard, the contracts, wizards and dashboards by segment."]]],
     ["Build Packs", PACKS.map((p) => [p.file, p.name, p.line])],
-    ["Admin", [["plans.html", "Plans", "API, done with you, done for you."]]],
+    ["Admin", [["plans.html", "Plans", "Plug In & Execute, Own the Build, Execution as a Service."]]],
   ];
   const docs = page({
     file: "docs.html",
@@ -1020,7 +1120,7 @@ ${AUDIENCES.map((l) => L(l.file, `Nextier for ${l.whoLong || l.who}`, l.descript
 ${STEPS.map((l) => L(l.file, l.h1.replace(/\.$/, ""), l.description)).join("\n")}
 
 ## Admin
-${L("plans.html", "Plans", "API, done with you, done for you and managed. Every plan runs on your own accounts.")}
+${L("plans.html", "Plans", "Plug In & Execute, Own the Build, Execution as a Service. Every plan runs on your own accounts.")}
 
 ## OpenAPI Spec
 - [openapi](openapi.json)

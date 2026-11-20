@@ -56,7 +56,7 @@
 - [Prioritize every inbound reply](reply-prioritization.html): Inbound Factory, step 3: prioritize every inbound reply. Callbacks first, then positive replies, so your team always knows the next conversation.
 
 ## Admin
-- [Plans](plans.html): API, done with you, done for you and managed. Every plan runs on your own accounts.
+- [Plans](plans.html): Plug In & Execute, Own the Build, Execution as a Service. Every plan runs on your own accounts.
 
 ## OpenAPI Spec
 - [openapi](openapi.json)
