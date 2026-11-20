@@ -40,7 +40,7 @@
 - [Build Packs](build-packs.html): Data Engine, Campaign Engine, Inbound Factory: a working execution system, set up in your own workspace.
 - [Data Engine](data-engine.html): From a territory to an owner you can call. Every parcel in your territory, the signal that says why now, the owner behind it, and their phones and emails, ranked. It ends at click to call.
 - [Campaign Engine](campaign-engine.html): Initial SMS sent and delivered. Then the replies. One approved first text to a whole block, sent across your own lines through every carrier and compliance check. Replies come back on the same number, get answered, and become booked calls.
-- [Inbound Factory](inbound-factory.html): Turn inbound replies into priority conversations. Replies sorted, callbacks on top, the next conversation already open. The machine does the clerical work and stops where the conversation starts.
+- [Inbound Factory](inbound-factory.html): Turn inbound replies into priority conversations. Conversations compounding over time convert into consistent deal flow.
 
 ## Admin
 - [Plans](plans.html): API, done with you, done for you and managed. Every plan runs on your own accounts.

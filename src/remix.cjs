@@ -279,7 +279,7 @@ module.exports = function remix(h) {
       n: "03",
       name: "Inbound Factory",
       line: "Turn inbound replies into priority conversations.",
-      about: "Replies sorted, callbacks on top, the next conversation already open. The machine does the clerical work and stops where the conversation starts.",
+      about: "Conversations compounding over time convert into consistent deal flow.",
       who: "Teams ready to turn every meaningful reply, voicemail, and callback into a timely, accountable conversation.",
       problem: "Warm replies go cold, voicemails are missed, and nobody knows who owns the next conversation.",
       spec: [
