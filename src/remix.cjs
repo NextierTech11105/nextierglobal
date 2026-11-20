@@ -376,7 +376,7 @@ module.exports = function remix(h) {
 <div class="btns">${heroBtn(offer(p.file, "withYou"), "Done with you", "btn primary")}${heroBtn(offer(p.file, "forYou"), "Done for you", "btn")}</div>
 </section>
 
-<section class="sec">${film(p.film)}${p.more ? `<div class="grid g2 deals" style="margin-top:28px">${p.more.map(film).join("")}</div>` : ""}</section>
+<section class="sec">${film(p.film)}${p.more ? (p.more.length === 1 ? `<div style="margin-top:28px">${film(p.more[0])}</div>` : `<div class="grid g2 deals" style="margin-top:28px">${p.more.map(film).join("")}</div>`) : ""}</section>
 ${p.file === "inbound-factory.html" ? `<section class="sec"><h2>Three steps</h2><div class="flow">${STEPS.map((x) => pill(x)).join("")}</div></section>` : ""}
 
 <section class="sec" id="spec">
