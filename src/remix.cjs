@@ -670,7 +670,15 @@ ${sec("08", "Quick facts", "", `<table class="kv">${FACTS.map(([k, v]) => `<tr><
 </section>
 <section class="sec films">
 ${/* 11-19 Thomas: "but first its dataengine" · "nextier communication os, just put that video" · "and then nxtstory nxtpost".
-   Every other film plays on its own page only ("REMOVE ANY OVERLAP VIDEOS"). */ ["data", "comms", "nxtpost"].map(film).join("\n")}
+   Every other film plays on its own page only ("REMOVE ANY OVERLAP VIDEOS"). */ ["data", "comms"].map(film).join("\n")}
+</section>
+<section class="sec">
+${/* 11-20 Thomas, word for word. Checked in code: Blotato publishes to 9 platforms (BLOTATO_PLATFORMS), the First-Take VSL studio
+   (first-take-studio.tsx), story links = one tappable story video per contact (lib/story-links). */ ""}<div class="kicker">NXTPOST</div>
+<h2>The capabilities and capacity of a social media team.</h2>
+<p class="sub">Systematically convert attention into a trusting audience.</p>
+<ul class="checks"><li>Automate up to 9 social media accounts.</li><li>Full VSL Studio.</li><li>Convert social media posts into shareable links.</li></ul>
+<div class="films" style="margin-top:22px">${film("nxtpost")}</div>
 </section>
 <section class="sec">
 <h2>Real deals</h2>
