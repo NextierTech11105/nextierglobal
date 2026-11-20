@@ -433,6 +433,14 @@ ${p.faq.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></
 <h1 class="open">We transform <span class="hl">data into leads</span>.</h1>
 <ul class="said"><li>Built for serious operators who understand the process of deal origination and are ready to multiply capacity around what already works.</li></ul>
 </section>
+<section class="sec">
+<h2>Who it's for</h2>
+<div class="flow"><span>Real estate deal makers</span><span>Business brokers</span><span>Family offices</span><span>GTM teams</span><span>CRM consultants</span><span>CTOs who need an operating system with context</span></div>
+</section>
+<section class="sec">
+<h2>Who it's not for</h2>
+<ul class="said"><li>Teams that wear busywork like a badge of honor</li><li>Teams with nothing that works yet</li></ul>
+</section>
 <section class="sec films">
 ${/* 11-19 Thomas: "but first its dataengine" · "nextier communication os, just put that video" · "and then nxtstory nxtpost".
    Every other film plays on its own page only ("REMOVE ANY OVERLAP VIDEOS"). */ ["data", "comms", "nxtpost"].map(film).join("\n")}
@@ -444,11 +452,6 @@ ${/* 11-19 Thomas: "but first its dataengine" · "nextier communication os, just
 <section class="sec"><a class="card nextpack" href="harness.html"><div class="k">How it fits together</div><h3>The Intentional Outreach Harness →</h3><p>The map, the Wizard, AI tasks vs role tasks, wizards and dashboards by segment.</p></a></section>
 <section class="sec">
 <div class="grid g3 packs">${PACKS.map((p) => `<a class="card pack" href="${p.file}"><div class="k">Pack ${p.n}</div><h3>${esc(p.name)}</h3>${p.tag ? `<p class="tag">${esc(p.tag)}</p>` : ""}<p>${esc(p.line)}</p><span class="more">See the spec →</span></a>`).join("")}</div>
-</section>
-<section class="sec">
-<h2>Works for</h2>
-<p class="sub">Same system. Your data.</p>
-<div class="flow"><span>Real Estate</span><span>B2B</span><span class="soon">B2C · soon</span></div>
 </section>
 <section class="sec">
 <h2>In every pack</h2>
