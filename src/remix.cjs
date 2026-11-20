@@ -378,6 +378,7 @@ module.exports = function remix(h) {
 
 <section class="sec">${film(p.film)}${p.more ? (p.more.length === 1 ? `<div style="margin-top:28px">${film(p.more[0])}</div>` : `<div class="grid g2 deals" style="margin-top:28px">${p.more.map(film).join("")}</div>`) : ""}</section>
 ${p.file === "inbound-factory.html" ? `<section class="sec"><h2>Three steps</h2><div class="flow">${STEPS.map((x) => pill(x)).join("")}</div></section>` : ""}
+${p.file === "campaign-engine.html" ? `<section class="sec"><h2>Build a block</h2><p class="sub">From a search to a block ready to send.</p>${exploded(BLOCK_LAYERS, "Exploded view · one campaign block", "One campaign block · your lines", "One campaign block")}</section>` : ""}
 
 <section class="sec" id="spec">
 <h2>What it does</h2>
@@ -624,10 +625,21 @@ ${ld([
   ];
   const steps = (xs) => `<ol class="steps">${xs.map(([b, s]) => `<li><b>${esc(b)}</b><span>${esc(s)}</span></li>`).join("")}</ol>`;
   const sec = (n, h, sub, inner) => `<section class="sec"><div class="kicker">${n}</div><h2>${esc(h)}</h2>${sub ? `<p class="sub">${esc(sub)}</p>` : ""}${inner}</section>`;
-  const exploded = () => `<div class="xv" role="img" aria-label="Inside every Build Pack, layer by layer: ${LAYERS.map(([n, c], i) => `layer ${i}, ${n}: ${c.replace(/ · /g, ", ")}`).join("; ")}.">
-<div class="xv-k">Exploded view · one Build Pack</div>
-<ol class="xv-stack">${LAYERS.map(([n, c], i) => `<li style="--i:${i}"><div><span class="xv-plate"><svg viewBox="0 0 360 56" preserveAspectRatio="none" aria-hidden="true"><polygon points="1,28 180,1 359,28 180,55"/></svg><b>L${i} · ${esc(n)}</b></span><span class="xv-tick"></span><span class="xv-cap">${esc(c)}</span></div></li>`).join("")}</ol>
-<div class="xv-base"><span>One platform · your accounts</span></div>
+  // 11-20 Thomas: "i also want a build block for campaign blocks" (the Block Builder page: "i love this") · "mapped to buckets and
+  // messaging libraries and sms stages" · "schedule calls and emails too". Only what runs today: block-builder.ts (search → trace →
+  // stage), the wizard's slot = the bucket, a LOCKED opener per slot or the block never stages, the 2nd text held until the first is
+  // 30 days old. ⛔ Calls + emails on a block's schedule and the 21-day blitz = Campaign Director PR 2, NOT built: no layer until they run.
+  const BLOCK_LAYERS = [
+    ["Block Builder", "Search · trace · stage"],
+    ["Bucket", "Absentee · pre-foreclosure · estate"],
+    ["Opener library", "One locked text per bucket"],
+    ["SMS stages", "Initial · then the 2nd text"],
+    ["You", "Approve · send"],
+  ];
+  const exploded = (layers = LAYERS, label = "Exploded view · one Build Pack", base = "One platform · your accounts", what = "Inside every Build Pack") => `<div class="xv" role="img" aria-label="${esc(what)}, layer by layer: ${layers.map(([n, c], i) => `layer ${i}, ${n}: ${c.replace(/ · /g, ", ")}`).join("; ")}.">
+<div class="xv-k">${esc(label)}</div>
+<ol class="xv-stack">${layers.map(([n, c], i) => `<li style="--i:${i}"><div><span class="xv-plate"><svg viewBox="0 0 360 56" preserveAspectRatio="none" aria-hidden="true"><polygon points="1,28 180,1 359,28 180,55"/></svg><b>L${i} · ${esc(n)}</b></span><span class="xv-tick"></span><span class="xv-cap">${esc(c)}</span></div></li>`).join("")}</ol>
+<div class="xv-base"><span>${esc(base)}</span></div>
 </div>`;
   const catalog = page({
     file: "build-packs.html",
