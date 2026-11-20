@@ -27,6 +27,7 @@ module.exports = function remix(h) {
     harness: { name: "The Harness", line: "Repeatable, high-impact, personalized initial outreach.", page: "harness-film.html", mp4: "assets/harness.mp4", poster: "assets/harness-poster.jpg", local: true },
     data: { name: "Data Engine", page: "data-optimization-engine.html" }, //                       11-04 "BRO THIS IS FUCKING EPIC"
     campaign: { name: "Campaign Engine", page: "campaign-engine-run.html", phone: true }, //       11-03 "this execution story mode is savage"
+    tour: { name: "Campaign Engine · The Tour", page: "campaign-engine-tour.html" }, //            11-20 "gpo": captions cut to plain words, no client names
     pipeline: { name: "Inbound Factory", page: "advisor-execution.html" }, //                      11-05 "LOVE IT" · renamed 11-19
     comms: { name: "Communication OS", page: "communication-os.html", mp4: "media/communication-os.mp4", mobile: "media/communication-os-mobile.mp4" },
     terminal: { name: "Deal Origination Terminal", page: "deal-origination-os.html" },
@@ -189,6 +190,7 @@ module.exports = function remix(h) {
     {
       file: "campaign-engine.html",
       film: "campaign",
+      more: ["tour"],
       n: "02",
       name: "Campaign Engine",
       line: "Initial SMS sent and delivered. Then the replies.",
