@@ -578,22 +578,76 @@ ${ld([
   };
 
   // ───────────────────────────── Build Packs, the catalog ─────────────────────────────
-  const IN_EVERY_PACK = [
-    ["Data recipe", "Where the records come from, tagged at origin."],
-    ["Opener library", "The first messages, written for your market."],
-    ["Playbook", "What happens after someone replies."],
-    ["Execution map", "What to work today."],
+  // 11-20 Thomas: "LIKE WHAT IS A BUILD PACK" · "HOW IT WORKS" · "remix to nextier": pushbuttonplatforms.com/build-packs, the site of
+  // his developer who built Outreach Global's boilerplate. Their sections, our words, our workspace, on DigitalOcean ("on digital ocean").
+  // ⛔ No one-click Deploy exists in code (grep 2026-11-20: no DO apps/databases API, no repo-from-template call), so it says "We deploy it there."
+  const WHAT = ["Architecture", "Database", "Design system", "API patterns", "Build plan"];
+  const HOW = [
+    ["Connect", "Your GitHub. Your DigitalOcean."],
+    ["Name it", "We deploy it there."],
+    ["Three links", "Live site. Private code. Database."],
+    ["Build on top", "Claude Code opens the pack."],
   ];
+  // The five layers, the way Nextier's own repo runs: CLAUDE.md · .claude/CLAUDE.md + skills/README.md · skills · rules · /handoff.
+  // The old "In every pack" list (data recipe, opener library, playbook, execution map) lives in L2 now.
+  const LAYERS = [
+    ["CLAUDE.md", "Identity · rules · one read"],
+    ["Dispatch", "Which skill · which job"],
+    ["/skills", "Recipe · openers · playbook · map"],
+    ["/rules", "Ground truth · the traps"],
+    ["Handoff", "Session log · starts warm"],
+  ];
+  const TABLES = [
+    ["lead_attempts", "The ledger. Written before every send."],
+    ["sms_messages", "Delivery, tied back to the attempt."],
+    ["campaign_leads", "Who's enrolled. What runs next."],
+  ];
+  const STACK = ["Next.js App Router + TypeScript", "Drizzle ORM + PostgreSQL on DigitalOcean", "NestJS API + an OpenAPI spec", "Built for Claude Code"];
+  const BUILD = [
+    ["Reads the skill", "Only what this job needs."],
+    ["Builds to the rules", "Decisions already made."],
+    ["You review", "Nothing moves without you."],
+    ["Handoff", "Next session starts warm."],
+  ];
+  const YOURS = [
+    ["Your code", "Private repo, in your GitHub."],
+    ["Your platform", "Live on your DigitalOcean."],
+    ["Your accounts", "In your name."],
+    ["Your customers", "Yours. No middleman."],
+  ];
+  const FACTS = [
+    ["Deploy", "Your GitHub + your DigitalOcean"],
+    ["Format", "Private repo, the full workspace inside"],
+    ["Hosting", "DigitalOcean App Platform. Deploys on every push."],
+    ["AI agent", "Built for Claude Code"],
+    ["Keys", "Yours, in your workspace"],
+  ];
+  const steps = (xs) => `<ol class="steps">${xs.map(([b, s]) => `<li><b>${esc(b)}</b><span>${esc(s)}</span></li>`).join("")}</ol>`;
+  const sec = (n, h, sub, inner) => `<section class="sec"><div class="kicker">${n}</div><h2>${esc(h)}</h2>${sub ? `<p class="sub">${esc(sub)}</p>` : ""}${inner}</section>`;
+  const exploded = () => `<div class="xv" role="img" aria-label="Inside every Build Pack, layer by layer: ${LAYERS.map(([n, c], i) => `layer ${i}, ${n}: ${c.replace(/ · /g, ", ")}`).join("; ")}.">
+<div class="xv-k">Exploded view · one Build Pack</div>
+<ol class="xv-stack">${LAYERS.map(([n, c], i) => `<li style="--i:${i}"><div><span class="xv-plate"><svg viewBox="0 0 360 56" preserveAspectRatio="none" aria-hidden="true"><polygon points="1,28 180,1 359,28 180,55"/></svg><b>L${i} · ${esc(n)}</b></span><span class="xv-tick"></span><span class="xv-cap">${esc(c)}</span></div></li>`).join("")}</ol>
+<div class="xv-base"><span>One platform · your accounts</span></div>
+</div>`;
   const catalog = page({
     file: "build-packs.html",
     title: "Build Packs · Nextier Global",
-    description: "A working execution system, set up in your own workspace: Data Engine, Campaign Engine, Inbound Factory.",
+    description: "A complete platform, live in your own GitHub and DigitalOcean: Data Engine, Campaign Engine, Inbound Factory. Built for Claude Code.",
     cta: "Book a call",
     body: `<section class="hero">
 <div class="kicker">Build Packs</div>
 <h1 class="open master"><span class="l">Transform data into <span class="hl">conversations</span>,</span> <span class="l">then conversations into <span class="hl">deals</span>.</span></h1>
 <p class="claim">Built for serious operators who understand the process of deal origination and are ready to multiply capacity around what already works.</p>
 </section>
+${sec("01", "What is a Build Pack?", "A complete platform, live in your own accounts.", `<div class="flow">${WHAT.map((w) => `<span>${esc(w)}</span>`).join("")}</div>
+<div class="grid g3 packs" style="margin-top:22px">${PACKS.map((p) => `<a class="card pack" href="${p.file}"><div class="k">Pack ${p.n}</div><h3>${esc(p.name)}</h3><p>${esc(p.line)}</p><span class="more">See the spec →</span></a>`).join("")}</div>`)}
+${sec("02", "How it works", "", steps(HOW))}
+${sec("03", "Inside every pack", "Five layers. Your AI agent never loses the thread.", exploded())}
+${sec("04", "The database is designed.", "Every table, every field, annotated with why.", `<table class="kv">${TABLES.map(([t, d]) => `<tr><td><code>${esc(t)}</code></td><td>${esc(d)}</td></tr>`).join("")}</table>`)}
+${sec("05", "Built for AI agents.", "Patterns written down. Nothing to guess.", `<ul class="checks">${STACK.map((s) => `<li>${esc(s)}</li>`).join("")}</ul>`)}
+${sec("06", "The build", "", steps(BUILD))}
+${sec("07", "What you own", "", `<ul class="checks">${YOURS.map(([b, d]) => `<li><b>${esc(b)}.</b> ${esc(d)}</li>`).join("")}</ul>`)}
+${sec("08", "Quick facts", "", `<table class="kv">${FACTS.map(([k, v]) => `<tr><th scope="row">${esc(k)}</th><td>${esc(v)}</td></tr>`).join("")}</table>`)}
 <section class="sec">
 <h2>Who it's for</h2>
 <div class="flow">${AUDIENCES.map((x) => pill(x)).join("")}</div>
@@ -611,13 +665,6 @@ ${/* 11-19 Thomas: "but first its dataengine" · "nextier communication os, just
 <div class="grid g2 deals">${film("bronx")}${film("windsor")}</div>
 </section>
 <section class="sec"><a class="card nextpack" href="harness.html"><div class="k">How it fits together</div><h3>The Intentional Outreach Harness →</h3><p>The map, the Wizard, AI tasks vs role tasks, wizards and dashboards by segment.</p></a></section>
-<section class="sec">
-<div class="grid g3 packs">${PACKS.map((p) => `<a class="card pack" href="${p.file}"><div class="k">Pack ${p.n}</div><h3>${esc(p.name)}</h3>${p.tag ? `<p class="tag">${esc(p.tag)}</p>` : ""}<p>${esc(p.line)}</p><span class="more">See the spec →</span></a>`).join("")}</div>
-</section>
-<section class="sec">
-<h2>In every pack</h2>
-<ul class="checks">${IN_EVERY_PACK.map(([b, d]) => `<li><b>${esc(b)}.</b> ${esc(d)}</li>`).join("")}</ul>
-</section>
 ${twoWays()}
 <section class="sec last"><div class="btns">${book("Book a call")}<a class="btn" href="plans.html">See the plans</a></div></section>`,
   });

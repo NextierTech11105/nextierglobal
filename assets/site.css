@@ -245,6 +245,36 @@ p.claim{font-size:clamp(18px,1.9vw,22px);font-weight:500;line-height:1.5;color:v
 .flow a{color:inherit;text-decoration:none}
 .flow span:has(a){transition:border-color .15s}
 .flow span:has(a):hover{border-color:var(--blue-soft)}
+/* exploded view · what is a Build Pack (2026-11-20) */
+.xv{--edge:#8a9bb0;--hot:#6aa8ff;position:relative;margin-top:22px;padding:30px clamp(16px,4vw,48px) 26px;border:1px solid #1c222c;border-radius:18px;background:radial-gradient(circle,rgba(138,155,176,.16) 1px,transparent 1.5px) 0 0/22px 22px,#05070a;font-family:var(--mono);text-transform:uppercase;letter-spacing:.14em}
+.xv-k{font-size:13px;color:var(--muted);margin-bottom:18px}
+.xv-stack{list-style:none;margin:0;padding:0;display:grid;gap:10px;position:relative}
+.xv-stack::before{content:'';position:absolute;top:28px;bottom:28px;left:0;width:min(360px,100%);border-left:1px dashed #3a4656;border-right:1px dashed #3a4656;pointer-events:none}
+.xv-stack li>a,.xv-stack li>div{display:grid;grid-template-columns:min(360px,100%) 48px 1fr;align-items:center;color:inherit;text-decoration:none}
+.xv-plate{position:relative;height:56px;display:grid;place-items:center}
+.xv-plate svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.xv-plate polygon{fill:#111820;stroke:var(--edge);stroke-width:1.3;vector-effect:non-scaling-stroke;transition:stroke .3s,fill .3s}
+.xv-plate b{position:relative;font-weight:700;font-size:15px;color:#fff}
+.xv-tick{height:1px;background:var(--edge);position:relative}
+.xv-tick::after{content:'';position:absolute;right:0;top:-6px;height:13px;width:1px;background:var(--edge)}
+.xv-cap{padding-left:14px;font-size:15px;color:var(--soft);transition:color .3s}
+.xv-stack li .xv-plate polygon{animation:xvplate 10s infinite;animation-delay:calc(var(--i) * 2s)}
+.xv-stack li .xv-cap{animation:xvcap 10s infinite;animation-delay:calc(var(--i) * 2s)}
+@keyframes xvplate{0%,16%{stroke:#6aa8ff;fill:#0f1a2a}22%,100%{stroke:#8a9bb0;fill:#111820}}
+@keyframes xvcap{0%,16%{color:#9cc6ff}22%,100%{color:#DCE4F7}}
+.xv-stack li:hover .xv-plate polygon{animation:none;stroke:var(--hot);fill:#0f1a2a}
+.xv-stack li:hover .xv-cap{animation:none;color:#fff}
+@media (prefers-reduced-motion:reduce){.xv-stack li .xv-plate polygon,.xv-stack li .xv-cap{animation:none}}
+.xv-base{margin:22px 0 0;width:min(360px,100%);text-align:center;font-size:13px;color:var(--muted)}
+.xv-base::before{content:'';display:block;height:9px;margin-bottom:10px;border:1px solid var(--edge);border-top:0;border-bottom:0;background:linear-gradient(var(--edge),var(--edge)) center/100% 1px no-repeat}
+@media (max-width:640px){
+  .xv-stack::before{display:none}
+  .xv-stack li>a,.xv-stack li>div{grid-template-columns:1fr;justify-items:center;gap:6px}
+  .xv-tick{display:none}
+  .xv-cap{padding:0;text-align:center}
+  .xv-base{width:100%}
+}
+table.kv td:first-child,table.kv th{width:1%;white-space:nowrap;padding-right:32px;text-align:left}
 ul.said{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:6px}
 ul.said li{font-family:var(--display);font-weight:700;font-size:clamp(19px,2.2vw,24px);color:#fff}
 ul.said li::before{content:'•';color:var(--orange);margin-right:.5em}
