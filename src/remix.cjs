@@ -8,6 +8,10 @@ module.exports = function remix(h) {
   const { page, code, tabs, esc, json, BASE, SITE, BOOK, EP, REG, MCP_TOOLS, SDK_METHODS } = h;
   const ep = (id) => EP.find((e) => e.id === id);
   const book = (label, cls = "btn primary") => `<a class="${cls}" href="${BOOK}" target="_blank" rel="noopener">${esc(label)}</a>`;
+  // Structured data for search and answer engines. "<" is escaped so no answer text can close the script tag.
+  const ORG = { "@type": "Organization", name: "Nextier Global", url: `${SITE}/` };
+  const faqLd = (faq) => ({ "@type": "FAQPage", mainEntity: faq.map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) });
+  const ld = (graph) => `<script type="application/ld+json">${JSON.stringify({ "@context": "https://schema.org", "@graph": graph }).replace(/</g, "\\u003c")}</script>`;
 
   // ───────────────────────────── money: src/offers.json (Thomas sets every price) ─────────────────────────────
   // No price → the button books a call and no number shows. Price + Stripe link → the button takes payment and the
@@ -358,7 +362,8 @@ module.exports = function remix(h) {
     return page({
       file: p.file,
       title: `${p.name} · Build Pack · Nextier Global`,
-      description: `${p.name} Build Pack. ${p.line} ${p.about}`,
+      // Search engines cut a description near 160 characters: line + first sentence, else the first sentence, else the line.
+      description: ((first) => [`${p.line} ${first}`, first, p.line].find((c) => c.length <= 160) || p.line)((p.about.match(/^.*?[.!?](?=\s|$)/) || [p.about])[0]),
       cta: "Book a call",
       body: `<section class="hero">
 <a class="back" href="build-packs.html">← Build Packs</a>
@@ -370,6 +375,7 @@ module.exports = function remix(h) {
 </section>
 
 <section class="sec">${film(p.film)}${p.more ? `<div class="grid g2 deals" style="margin-top:28px">${p.more.map(film).join("")}</div>` : ""}</section>
+${p.file === "inbound-factory.html" ? `<section class="sec"><h2>Three steps</h2><div class="flow">${STEPS.map((x) => pill(x)).join("")}</div></section>` : ""}
 
 <section class="sec" id="spec">
 <h2>What it does</h2>
@@ -411,7 +417,161 @@ ${p.faq.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></
 
 <section class="sec last">
 <a class="card nextpack" href="${next.file}"><div class="k">Next · Build Pack ${next.n}</div><h3>${esc(next.name)} →</h3><p>${esc(next.line)}</p></a>
-</section>`,
+</section>
+${ld([
+  { "@type": "Service", name: `${p.name} Build Pack`, serviceType: p.name, description: `${p.line} ${p.about}`, provider: ORG, url: `${SITE}/${p.file}` },
+  faqLd(p.faq),
+])}`,
+    });
+  };
+
+  // ───────────────────────────── landing pages: one link per buyer, one per Inbound Factory step ─────────────
+  // 11-20 Thomas: "make each one of those now their own landing pages" · "that I can share in SMS" ·
+  // "link after I get permission to send it" · "take SEO GEO seriously" · "AEO".
+  // Phone first (an SMS link opens on a phone), one big action. Each page answers its own questions in plain words
+  // (FAQPage JSON-LD for answer engines), carries its own title, description and canonical, and is in sitemap + llms.txt.
+  const MASTER = "Transform data into conversations, then conversations into deals.";
+  const LANDINGS = [
+    {
+      file: "real-estate-deal-makers.html", who: "Real estate deal makers", film: "data",
+      said: [MASTER, "Every lot. Every owner. Their cell."],
+      description: "Nextier for real estate deal makers: every lot and owner in your territory, traced to a cell, ranked by why now. Replies sorted for you.",
+      get: ["Every property and owner in your territory, ranked by why now.", "The owner traced to a cell, on your own account.", "First texts from your own numbers, only when you press Send.", "Replies detected, classified and put in priority order."],
+      faq: [
+        ["What does Nextier do for real estate deal makers?", "It turns property data into conversations: every lot and owner in your territory, the reason to call now, and the owner's cell, ranked."],
+        ["Where does the data come from?", "Public records and your own accounts. New York loads from open records today. Other states run on a property data plan in your name."],
+        ["Does anything send on its own?", "No. Nothing goes out until you press Send. Stop and do-not-call numbers are blocked."],
+      ],
+    },
+    {
+      file: "business-brokers.html", who: "Business brokers", film: "pipeline",
+      said: [MASTER, "Business owners in your market, ready to call."],
+      description: "Nextier for business brokers: business owners in your market, their direct line, click to call from your own line, and every callback on top.",
+      get: ["Business owners in your market, from the lists you choose.", "Their direct line, checked against do-not-call.", "Click to call from your own line. Every outcome logged.", "Callbacks and replies put in priority order."],
+      faq: [
+        ["What does Nextier do for business brokers?", "It turns business data into owners you can call: your market, the owner's direct line, and a call button on every record."],
+        ["Is it texting or calling?", "Calling first. For business owners, Nextier is set up call-first, from your own line."],
+        ["What happens when an owner calls back?", "The callback goes to the top of your list, with what they said."],
+      ],
+    },
+    {
+      file: "family-offices.html", who: "Family offices", film: "data",
+      said: [MASTER, "Owners with a reason to sell now."],
+      description: "Nextier for family offices: property owners in the markets you buy, the person behind the LLC, ranked by why now, worked by your team.",
+      get: ["Property owners in the markets you buy, ranked by why now.", "The person behind the LLC, where the record allows.", "Your team works the top of the list.", "Every touch logged. Every reply in priority order."],
+      faq: [
+        ["What does Nextier do for a family office?", "It builds deal flow from property owners in the markets you buy: who owns it, why now, and how to reach them."],
+        ["Can it see through an LLC?", "It traces the person behind the LLC where the record allows."],
+        ["Who runs it?", "Your team, on your own accounts. Or we run it for you and report what moved each week."],
+      ],
+    },
+    {
+      file: "gtm-teams.html", who: "GTM teams", film: "comms",
+      said: [MASTER, "Your target list, built, traced and ready to work."],
+      description: "Nextier for GTM teams: your ideal customer list built from sources you choose, contacts traced and checked, every reply detected, classified and prioritized.",
+      get: ["Your ideal customer list, built from the sources you choose.", "Contacts traced and checked before anyone dials.", "Calls, texts and emails logged on every record.", "Replies detected, classified and prioritized."],
+      faq: [
+        ["What does Nextier do for GTM teams?", "It turns your ideal customer profile into a worked list: built, traced, called, and every reply sorted."],
+        ["Does it replace our CRM?", "No. It writes to your CRM through one connector."],
+        ["Who decides what goes out?", "Your team. Nothing sends until a person presses Send."],
+      ],
+    },
+    {
+      file: "crm-consultants.html", who: "CRM consultants", film: "data",
+      said: [MASTER, "Leads in. Booked calls out. Your client's CRM stays the record."],
+      description: "Nextier for CRM consultants: leads in, booked calls out, written to your client's CRM through one connector. Your client keeps every account.",
+      get: ["One connector: find the record, update fields, add a note, tag.", "Booked calls land in your client's CRM.", "Your client keeps every account in their own name.", "The same setup, repeatable for every client."],
+      faq: [
+        ["Which CRMs does it work with?", "Any CRM that fits one connector shape: find, update, note, tag. One is live today. Others plug into the same shape."],
+        ["Who owns the accounts?", "Your client. Texting, data and CRM accounts are opened in their name, and they pay each provider directly."],
+        ["What does my client see?", "Leads, replies in priority order, and booked calls in their CRM."],
+      ],
+    },
+    {
+      file: "ctos.html", who: "CTOs", whoLong: "CTOs who need an operating system with context", title: "For CTOs: an operating system with context", film: "harness", docs: true,
+      said: [MASTER, "API, SDK and MCP on one execution system."],
+      description: `Nextier for CTOs: an execution system with ${EP.length} API endpoints, a zero-dependency SDK and MCP tools. Runs on your own accounts, every action logged.`,
+      get: [`${EP.length} API endpoints, with curl and SDK examples.`, "A zero-dependency JavaScript SDK with TypeScript types.", "MCP tools for AI assistants, for operators today.", "Runs on your own accounts. Every action logged."],
+      faq: [
+        ["What is Nextier for a CTO?", "An execution system with an API, an SDK and MCP tools. It sources data, runs outreach and sorts replies, on your own accounts."],
+        ["Is there an API?", `Yes. ${EP.length} endpoints with curl and SDK examples, plus an OpenAPI spec.`],
+        ["Does anything send without a person?", "No. Every send waits for a person's press."],
+      ],
+    },
+    {
+      file: "reply-detection.html", step: "Detect", h1: "Detect every inbound reply.", film: "pipeline",
+      said: ["Texts. Calls. Voicemails.", "Caught, stored and tied to the lead."],
+      description: "Inbound Factory, step 1: detect every inbound reply. Every text, call back and voicemail is caught, stored and tied to the lead.",
+      get: ["Every text reply, on the number it came in on.", "Every call back and voicemail, with the transcript.", "Stored first, then read. Nothing lost."],
+      faq: [
+        ["What counts as an inbound reply?", "Any text, call or voicemail from a lead. Any response means they raised their hand."],
+        ["What if they call instead of text?", "The call and the voicemail are captured with a transcript, and they go to the top of the list."],
+      ],
+    },
+    {
+      file: "reply-classification.html", step: "Classify", h1: "Classify every inbound reply.", film: "pipeline",
+      said: ["Interested. Question. Not now. Stop.", "Every reply read and labeled."],
+      description: "Inbound Factory, step 2: classify every inbound reply as positive, negative, a question, a booking or a stop. Stop is blocked for good.",
+      get: ["Positive, negative, question, booking, stop.", "Stop and do-not-call are blocked from every future send.", "The machine sorts. A person confirms what matters."],
+      faq: [
+        ["How are replies classified?", "Each reply is read and labeled: positive, negative, a question, a booking or a stop."],
+        ["What happens on STOP?", "The number is blocked from every future send."],
+      ],
+    },
+    {
+      file: "reply-prioritization.html", step: "Prioritize", h1: "Prioritize every inbound reply.", film: "pipeline",
+      said: ["Hottest first.", "Callbacks on top. Then positive replies.", "One thing to work next."],
+      description: "Inbound Factory, step 3: prioritize every inbound reply. Callbacks first, then positive replies, so your team always knows the next conversation.",
+      get: ["People who called you back come first.", "Positive replies next.", "Your team opens one conversation at a time, already in order."],
+      faq: [
+        ["Who gets worked first?", "People who called back, then positive replies. A callback outranks every cold record."],
+        ["Why prioritize?", "It removes the decision of what to work next, so your team spends its time in conversations."],
+      ],
+    },
+  ];
+  const AUDIENCES = LANDINGS.filter((l) => l.who);
+  const STEPS = LANDINGS.filter((l) => l.step);
+  const pill = (l, on) => `<span${on ? ' class="soon"' : ""}><a href="${l.file}">${esc(l.who ? l.whoLong || l.who : l.step)}</a></span>`;
+
+  const landingPage = (l) => {
+    const name = l.who ? `For ${l.whoLong || l.who}` : `${l.step} · Inbound Factory`;
+    // Lowercase a plain first word ("Business brokers" → "business brokers"), never an acronym (CTOs, GTM, CRM).
+    const h1 = l.who ? `For <span class="hl">${esc((l.whoLong || l.who).replace(/^[A-Z](?=[a-z])/, (c) => c.toLowerCase()))}</span>.` : esc(l.h1);
+    const second = l.docs ? `<a class="btn" href="docs.html">Read the docs</a>` : `<a class="btn" href="#film">Watch it run</a>`;
+    const others = l.who
+      ? `<h2>Also built for</h2><div class="flow">${AUDIENCES.filter((x) => x !== l).map((x) => pill(x)).join("")}</div>`
+      : `<h2>Inbound Factory</h2><div class="flow">${STEPS.map((x) => pill(x, x === l)).join("")}<span><a href="inbound-factory.html">The whole pack →</a></span></div>`;
+    return page({
+      file: l.file,
+      title: `${l.title || name} · Nextier Global`,
+      description: l.description,
+      cta: "",
+      body: `<section class="hero">
+<div class="kicker">${l.who ? "Nextier" : `Inbound Factory · Step ${STEPS.indexOf(l) + 1} of 3`}</div>
+<h1 class="open">${h1}</h1>
+<ul class="said">${l.said.map((s) => `<li>${esc(s)}</li>`).join("")}</ul>
+<div class="btns">${book("Book 15 minutes")}${second}</div>
+</section>
+<section class="sec">
+<h2>What you get</h2>
+<ul class="checks">${l.get.map((g) => `<li>${esc(g)}</li>`).join("")}</ul>
+</section>
+<section class="sec" id="film">${film(l.film)}</section>
+<section class="sec faq">
+<h2>Questions</h2>
+${l.faq.map(([q, a]) => `<details open><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join("")}
+</section>
+<section class="sec">${others}</section>
+<section class="sec last"><div class="btns">${book("Book 15 minutes")}</div></section>
+${ld([
+  {
+    "@type": "WebPage", name, description: l.description, url: `${SITE}/${l.file}`, inLanguage: "en",
+    isPartOf: { "@type": "WebSite", name: "Nextier Global", url: `${SITE}/` },
+    ...(l.who ? { audience: { "@type": "BusinessAudience", audienceType: l.whoLong || l.who } } : {}),
+  },
+  { "@type": "Service", name: l.who ? `Nextier for ${l.whoLong || l.who}` : `Inbound Factory: ${l.step}`, description: l.description, provider: ORG, url: `${SITE}/${l.file}` },
+  faqLd(l.faq),
+])}`,
     });
   };
 
@@ -429,12 +589,12 @@ ${p.faq.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></
     cta: "Book a call",
     body: `<section class="hero">
 <div class="kicker">Build Packs</div>
-<h1 class="open">We transform <span class="hl">data into leads</span>.</h1>
+<h1 class="open">Transform data into <span class="hl">conversations</span>, then conversations into <span class="hl">deals</span>.</h1>
 <ul class="said"><li>Built for serious operators who understand the process of deal origination and are ready to multiply capacity around what already works.</li></ul>
 </section>
 <section class="sec">
 <h2>Who it's for</h2>
-<div class="flow"><span>Real estate deal makers</span><span>Business brokers</span><span>Family offices</span><span>GTM teams</span><span>CRM consultants</span><span>CTOs who need an operating system with context</span></div>
+<div class="flow">${AUDIENCES.map((x) => pill(x)).join("")}</div>
 </section>
 <section class="sec">
 <h2>Who it's not for</h2>
@@ -784,6 +944,12 @@ ${L("harness.html", "Intentional Outreach Harness", "Agnostic execution architec
 ${L("build-packs.html", "Build Packs", "Data Engine, Campaign Engine, Inbound Factory: a working execution system, set up in your own workspace.")}
 ${PACKS.map((p) => L(p.file, p.name, `${p.line} ${p.about}`)).join("\n")}
 
+## Who it's for
+${AUDIENCES.map((l) => L(l.file, `Nextier for ${l.whoLong || l.who}`, l.description)).join("\n")}
+
+## Inbound Factory, step by step
+${STEPS.map((l) => L(l.file, l.h1.replace(/\.$/, ""), l.description)).join("\n")}
+
 ## Admin
 ${L("plans.html", "Plans", "API, done with you, done for you and managed. Every plan runs on your own accounts.")}
 
@@ -997,5 +1163,6 @@ ${segTable(DASHBOARDS)}
     "best-practices.html": best,
   };
   PACKS.forEach((p, i) => (files[p.file] = packPage(p, i)));
+  LANDINGS.forEach((l) => (files[l.file] = landingPage(l)));
   return { files, text: { "llms.txt": llms, "skill.md": skill, "openapi.json": JSON.stringify(openapi, null, 2) + "\n" } };
 };

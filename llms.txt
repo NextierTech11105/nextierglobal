@@ -42,6 +42,19 @@
 - [Campaign Engine](campaign-engine.html): Initial SMS sent and delivered. Then the replies. One approved first text to a whole block, sent across your own lines through every carrier and compliance check. Replies come back on the same number, get answered, and become booked calls.
 - [Inbound Factory](inbound-factory.html): Turn inbound replies into priority conversations. We detect, classify and prioritize all inbound replies, eliminating decision fatigue and delivering focus. Conversations compounding over time convert into consistent deal flow.
 
+## Who it's for
+- [Nextier for Real estate deal makers](real-estate-deal-makers.html): Nextier for real estate deal makers: every lot and owner in your territory, traced to a cell, ranked by why now. Replies sorted for you.
+- [Nextier for Business brokers](business-brokers.html): Nextier for business brokers: business owners in your market, their direct line, click to call from your own line, and every callback on top.
+- [Nextier for Family offices](family-offices.html): Nextier for family offices: property owners in the markets you buy, the person behind the LLC, ranked by why now, worked by your team.
+- [Nextier for GTM teams](gtm-teams.html): Nextier for GTM teams: your ideal customer list built from sources you choose, contacts traced and checked, every reply detected, classified and prioritized.
+- [Nextier for CRM consultants](crm-consultants.html): Nextier for CRM consultants: leads in, booked calls out, written to your client's CRM through one connector. Your client keeps every account.
+- [Nextier for CTOs who need an operating system with context](ctos.html): Nextier for CTOs: an execution system with 11 API endpoints, a zero-dependency SDK and MCP tools. Runs on your own accounts, every action logged.
+
+## Inbound Factory, step by step
+- [Detect every inbound reply](reply-detection.html): Inbound Factory, step 1: detect every inbound reply. Every text, call back and voicemail is caught, stored and tied to the lead.
+- [Classify every inbound reply](reply-classification.html): Inbound Factory, step 2: classify every inbound reply as positive, negative, a question, a booking or a stop. Stop is blocked for good.
+- [Prioritize every inbound reply](reply-prioritization.html): Inbound Factory, step 3: prioritize every inbound reply. Callbacks first, then positive replies, so your team always knows the next conversation.
+
 ## Admin
 - [Plans](plans.html): API, done with you, done for you and managed. Every plan runs on your own accounts.
 
