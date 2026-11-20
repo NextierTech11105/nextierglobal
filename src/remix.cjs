@@ -431,6 +431,7 @@ ${p.faq.map(([q, a]) => `<details><summary>${esc(q)}</summary><p>${esc(a)}</p></
     body: `<section class="hero">
 <div class="kicker">Build Packs</div>
 <h1 class="open">We transform <span class="hl">data into leads</span>.</h1>
+<ul class="said"><li>Built for serious operators who understand the process of deal origination and are ready to multiply capacity around what already works.</li></ul>
 </section>
 <section class="sec films">
 ${/* 11-19 Thomas: "but first its dataengine" · "nextier communication os, just put that video" · "and then nxtstory nxtpost".
