@@ -623,6 +623,42 @@ ${ld([
     ["AI agent", "Built for Claude Code"],
     ["Keys", "Yours, in your workspace"],
   ];
+  // 11-20 "remix to nextier" · "on the site", second pass: their 02 (the problem with starting from scratch) and 03 (what you're buying,
+  // the unzipped workspace). Ours answers with decisions already made in code, and the tree is files that exist on main (checked 11-20).
+  const DECIDED = [
+    ["Which owners?", "An event first: the reason to call now."],
+    ["Which numbers?", "The primary cell. Never a landline."],
+    ["How many texts per line?", "500 a day. New lines ramp up to it."],
+    ["What's the first text?", "One locked opener per bucket."],
+    ["Who gets called back first?", "Anyone who called in or said yes."],
+  ];
+  const TREE = [
+    ["your-platform/", ""],
+    ["├── CLAUDE.md", "L0 · the rules, one read"],
+    ["├── .claude/", ""],
+    ["│   ├── CLAUDE.md", "L1 · which skill, which job"],
+    ["│   ├── skills/", "L2 · one workflow per job"],
+    ["│   │   ├── README.md", "the dispatch map"],
+    ["│   │   ├── execution-map/SKILL.md", ""],
+    ["│   │   ├── launch-brief/SKILL.md", ""],
+    ["│   │   ├── inbound-factory-classification/SKILL.md", ""],
+    ["│   │   └── attempt-ledger/SKILL.md", ""],
+    ["│   ├── rules/", "L3 · ground truth, the traps"],
+    ["│   │   ├── tenant-scope.md", ""],
+    ["│   │   ├── sms-safety.md", ""],
+    ["│   │   ├── contactability.md", ""],
+    ["│   │   └── outbound-execution-authority.md", ""],
+    ["│   └── commands/", ""],
+    ["│       └── handoff.md", "L4 · next session starts warm"],
+    ["├── apps/", ""],
+    ["│   ├── front/", "Next.js app"],
+    ["│   └── api/", "NestJS API"],
+    ["└── .env.example", "your keys go here"],
+  ];
+  const tree = () => {
+    const w = Math.max(...TREE.map(([p]) => p.length)) + 2;
+    return `<pre class="tree" aria-label="One Build Pack, unzipped">${TREE.map(([p, c]) => (c ? `${esc(p.padEnd(w))}<span class="c">← ${esc(c)}</span>` : esc(p))).join("\n")}</pre>`;
+  };
   const steps = (xs) => `<ol class="steps">${xs.map(([b, s]) => `<li><b>${esc(b)}</b><span>${esc(s)}</span></li>`).join("")}</ol>`;
   const sec = (n, h, sub, inner) => `<section class="sec"><div class="kicker">${n}</div><h2>${esc(h)}</h2>${sub ? `<p class="sub">${esc(sub)}</p>` : ""}${inner}</section>`;
   // 11-20 Thomas: "i also want a build block for campaign blocks" (the Block Builder page: "i love this") · "mapped to buckets and
@@ -654,12 +690,14 @@ ${ld([
 ${sec("01", "What is a Build Pack?", "A complete platform, live in your own accounts.", `<div class="flow">${WHAT.map((w) => `<span>${esc(w)}</span>`).join("")}</div>
 <div class="grid g3 packs" style="margin-top:22px">${PACKS.map((p) => `<a class="card pack" href="${p.file}"><div class="k">Pack ${p.n}</div><h3>${esc(p.name)}</h3><p>${esc(p.line)}</p><span class="more">See the spec →</span></a>`).join("")}</div>`)}
 ${sec("02", "How it works", "", steps(HOW))}
-${sec("03", "Inside every pack", "Five layers. Your AI agent never loses the thread.", exploded())}
-${sec("04", "The database is designed.", "Every table, every field, annotated with why.", `<table class="kv">${TABLES.map(([t, d]) => `<tr><td><code>${esc(t)}</code></td><td>${esc(d)}</td></tr>`).join("")}</table>`)}
-${sec("05", "Built for AI agents.", "Patterns written down. Nothing to guess.", `<ul class="checks">${STACK.map((s) => `<li>${esc(s)}</li>`).join("")}</ul>`)}
-${sec("06", "The build", "", steps(BUILD))}
-${sec("07", "What you own", "", `<ul class="checks">${YOURS.map(([b, d]) => `<li><b>${esc(b)}.</b> ${esc(d)}</li>`).join("")}</ul>`)}
-${sec("08", "Quick facts", "", `<table class="kv">${FACTS.map(([k, v]) => `<tr><th scope="row">${esc(k)}</th><td>${esc(v)}</td></tr>`).join("")}</table>`)}
+${sec("03", "The problem with starting from scratch.", "Months of decisions before the first reply. These are made.", `<table class="kv">${DECIDED.map(([q, a]) => `<tr><th scope="row">${esc(q)}</th><td>${esc(a)}</td></tr>`).join("")}</table>`)}
+${sec("04", "What you're buying", "Not documentation. An execution environment.", tree())}
+${sec("05", "Inside every pack", "Five layers. Your AI agent never loses the thread.", exploded())}
+${sec("06", "The database is designed.", "Every table, every field, annotated with why.", `<table class="kv">${TABLES.map(([t, d]) => `<tr><td><code>${esc(t)}</code></td><td>${esc(d)}</td></tr>`).join("")}</table>`)}
+${sec("07", "Built for AI agents.", "Patterns written down. Nothing to guess.", `<ul class="checks">${STACK.map((s) => `<li>${esc(s)}</li>`).join("")}</ul>`)}
+${sec("08", "The build", "", steps(BUILD))}
+${sec("09", "What you own", "", `<ul class="checks">${YOURS.map(([b, d]) => `<li><b>${esc(b)}.</b> ${esc(d)}</li>`).join("")}</ul>`)}
+${sec("10", "Quick facts", "", `<table class="kv">${FACTS.map(([k, v]) => `<tr><th scope="row">${esc(k)}</th><td>${esc(v)}</td></tr>`).join("")}</table>`)}
 <section class="sec">
 <h2>Who it's for</h2>
 <div class="flow">${AUDIENCES.map((x) => pill(x)).join("")}</div>

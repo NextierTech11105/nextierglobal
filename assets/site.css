@@ -274,6 +274,8 @@ p.claim{font-size:clamp(18px,1.9vw,22px);font-weight:500;line-height:1.5;color:v
   .xv-cap{padding:0;text-align:center}
   .xv-base{width:100%}
 }
+pre.tree{margin:18px 0 0;padding:22px clamp(16px,3vw,28px);background:#05070a;border:1px solid #1c222c;border-radius:18px;font-family:var(--mono);font-size:15px;line-height:1.6;color:#fff;overflow-x:auto;white-space:pre}
+pre.tree .c{color:var(--orange-soft)}
 table.kv td:first-child,table.kv th{width:1%;white-space:nowrap;padding-right:32px;text-align:left}
 ul.said{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:6px}
 ul.said li{font-family:var(--display);font-weight:700;font-size:clamp(19px,2.2vw,24px);color:#fff}
